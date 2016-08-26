@@ -18,10 +18,18 @@ public class Plateau {
     public ArrayList<Piece> piecesVertes;
     
     public Plateau(){
-        
+        this.piecesBleues = this.creationPieces(0);
+        this.piecesJaunes = this.creationPieces(1);
+        this.piecesRouges = this.creationPieces(2);
+        this.piecesVertes = this.creationPieces(3);
     }
     
-    private void creationPieces(int i){
-        
+    private ArrayList<Piece> creationPieces(int couleurJoueur){
+        ArrayList<Piece> tmp = new ArrayList<Piece>();
+        for(int i = 1; i < 22; i++){
+            Piece p = new Piece(couleurJoueur, i);
+            tmp.add(p);
+        }
+        return tmp;
     }
 }
