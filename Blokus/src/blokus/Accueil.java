@@ -35,7 +35,6 @@ public class Accueil extends javax.swing.JFrame {
         btnJouer = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         btnQuitter = new javax.swing.JButton();
-        btnTest = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -55,13 +54,6 @@ public class Accueil extends javax.swing.JFrame {
             }
         });
 
-        btnTest.setText("X");
-        btnTest.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTestActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -72,8 +64,6 @@ public class Accueil extends javax.swing.JFrame {
                 .addComponent(btnJouer, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(57, 57, 57)
                 .addComponent(btnQuitter, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnTest, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -83,20 +73,14 @@ public class Accueil extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnJouer, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnQuitter, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnTest)))
+                    .addComponent(btnQuitter, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnJouerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJouerActionPerformed
-        // TODO add your handling code here:
-        //Partie p = new Partie();
-        //p.setVisible(true);
-        //infoJoueurs info = new infoJoueurs(this, true);
-        //info.setVisible(true);
-        
+        // sélection nb joueurs + noms
         String[] nb = {"2", "3", "4"};
         nombreJoueurs = JOptionPane.showOptionDialog(null, "Combien de joueurs ?", "Information",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,nb,nb[2])+ 2;
         for(int i = 0; i < nombreJoueurs; i++){
@@ -107,20 +91,16 @@ public class Accueil extends javax.swing.JFrame {
             }
             nomsJoueurs[i] = s;
         }
+        
+        // lancement partie
+        PartieGUI partie = new PartieGUI(nomsJoueurs);
+        partie.setVisible(true);
     }//GEN-LAST:event_btnJouerActionPerformed
 
     private void btnQuitterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitterActionPerformed
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_btnQuitterActionPerformed
-
-    private void btnTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTestActionPerformed
-        // TODO add your handling code here:
-        JOptionPane.showConfirmDialog(this, nombreJoueurs);
-        for(int i = 0; i < nombreJoueurs; i++){
-            JOptionPane.showMessageDialog(this, "joueur n°" + (i+1) + " : " + nomsJoueurs[i], "Info", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_btnTestActionPerformed
 
     /**
      * @param args the command line arguments
@@ -160,7 +140,6 @@ public class Accueil extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnJouer;
     private javax.swing.JButton btnQuitter;
-    private javax.swing.JButton btnTest;
     private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }
