@@ -331,8 +331,8 @@ public class Piece {
     /**
      * @return the forme
      */
-    public int[][] getForme() {
-        return forme;
+    public int getForme(int i, int j) {
+        return forme[i][j];
     }
 
     /**
@@ -342,7 +342,7 @@ public class Piece {
         this.forme = forme;
     }
     
-    public Piece rotationPiece(Piece select){
+    public static Piece rotationPiece(Piece select){
         int L = select.getLargeur(),
             H = select.getHauteur();
         Piece p = new Piece(H, L, select.getNumeroPiece());
@@ -350,6 +350,20 @@ public class Piece {
             for (int j = 0; j < H; j++) {
                 int x = j,
                     y = H - 1 - i;
+                p.forme[x][y] = select.forme[i][j];
+            }
+        }
+        return p;
+    }
+    
+    public static Piece symetriePiece(Piece select){
+        int L = select.getLargeur(),
+            H = select.getHauteur();
+        Piece p = new Piece(H, L, select.getNumeroPiece());
+        for (int i = 0; i < L; i++) {
+            for (int j = 0; j < H; j++) {
+                int x = L - i - 1,
+                    y = j;
                 p.forme[x][y] = select.forme[i][j];
             }
         }
