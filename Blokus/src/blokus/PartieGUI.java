@@ -9,10 +9,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import static java.lang.System.console;
 import java.util.ArrayList;
 import static javafx.scene.paint.Color.rgb;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 
 /**
@@ -303,6 +306,7 @@ public class PartieGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
+    // création de toutes les pièces pour chaque joueur
     private void creationPiecesPlateau(Plateau board){
         int compteur = 0;
         // pièces bleues
@@ -313,6 +317,16 @@ public class PartieGUI extends javax.swing.JFrame {
             box.setBackground(this.blueBox.getBackground());
             //box.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
             box.setLocation((compteur/5)*50, (compteur%5)*50);
+            box.setName(Integer.toString(compteur));
+            box.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    int num = Integer.parseInt(box.getName());
+                    int color = 0;
+                    Piece tmp = new Piece(color, num+1);
+                    affichePieceSelected(tmp);
+                }
+            });
             box.setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
             for (int i = 0; i < p.getHauteur(); i++) {
@@ -339,6 +353,16 @@ public class PartieGUI extends javax.swing.JFrame {
             box.setBackground(this.yellowBox.getBackground());
             //box.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
             box.setLocation((compteur/5)*50, (compteur%5)*50);
+            box.setName(Integer.toString(compteur));
+            box.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    int num = Integer.parseInt(box.getName());
+                    int color = 1;
+                    Piece tmp = new Piece(color, num+1);
+                    affichePieceSelected(tmp);
+                }
+            });
             box.setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
             for (int i = 0; i < p.getHauteur(); i++) {
@@ -365,6 +389,16 @@ public class PartieGUI extends javax.swing.JFrame {
             box.setBackground(this.redBox.getBackground());
             //box.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
             box.setLocation((compteur/5)*50, (compteur%5)*50);
+            box.setName(Integer.toString(compteur));
+            box.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    int num = Integer.parseInt(box.getName());
+                    int color = 2;
+                    Piece tmp = new Piece(color, num+1);
+                    affichePieceSelected(tmp);
+                }
+            });
             box.setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
             for (int i = 0; i < p.getHauteur(); i++) {
@@ -391,6 +425,16 @@ public class PartieGUI extends javax.swing.JFrame {
             box.setBackground(this.greenBox.getBackground());
             //box.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
             box.setLocation((compteur/5)*50, (compteur%5)*50);
+            box.setName(Integer.toString(compteur));
+            box.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    int num = Integer.parseInt(box.getName());
+                    int color = 3;
+                    Piece tmp = new Piece(color, num+1);
+                    affichePieceSelected(tmp);
+                }
+            });
             box.setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
             for (int i = 0; i < p.getHauteur(); i++) {
@@ -411,7 +455,45 @@ public class PartieGUI extends javax.swing.JFrame {
     }
     
     private void affichePieceSelected(Piece p){
-        
+        Color color = Color.white;
+        switch(p.getCouleurJoueur()){
+                        case 0: 
+                            color = Color.blue;
+                            break;
+                        case 1:
+                            color = Color.yellow;
+                            break;
+                        case 2:
+                            color = Color.red;
+                            break;
+                        case 3:
+                            color = Color.green;
+                            break;
+                    }
+        Border border = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0));
+        JPanel box = new JPanel();
+        selectedPiece.add(box);
+        box.setSize(100, 100);
+        box.setBorder(border);
+        //box.setLocation(17, 20);
+        box.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        for (int i = 0; i < p.getHauteur(); i++) {
+            for (int j = 0; j < p.getLargeur(); j++) {
+                if(p.getForme(j,i) == 1){
+                    JPanel partiePiece = new JPanel();
+                    partiePiece.setPreferredSize(new Dimension (19, 19));
+                    partiePiece.setBackground(color);
+                    partiePiece.setBorder(border);
+                    gbc.gridx = i;
+                    gbc.gridy = j;
+                    box.add(partiePiece, gbc);
+                    partiePiece.setVisible(true);
+                } 
+            }
+        }
+        // System.out.println(color.toString());
+        // System.out.println("piece n°" + p.getNumeroPiece());
     }
     
     private void btnRotationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRotationMouseClicked
