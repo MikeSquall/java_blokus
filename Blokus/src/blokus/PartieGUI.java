@@ -5,6 +5,7 @@
  */
 package blokus;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -33,6 +34,7 @@ public class PartieGUI extends javax.swing.JFrame {
      */
     public PartieGUI(String[] noms) {
         initComponents();
+        this.setLocationRelativeTo(null);
         btnRotation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blokus/btnRotation.png")));
         btnSymetrie.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blokus/btnSymetrie.png")));
         this.j1Name.setText(noms[0]);
@@ -323,8 +325,8 @@ public class PartieGUI extends javax.swing.JFrame {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     int num = Integer.parseInt(box.getName());
                     int color = 0;
-                    Piece tmp = new Piece(color, num+1);
-                    affichePieceSelected(tmp);
+                    selected = new Piece(color, num+1);
+                    affichePieceSelected(selected);
                 }
             });
             box.setLayout(new GridBagLayout());
@@ -359,8 +361,8 @@ public class PartieGUI extends javax.swing.JFrame {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     int num = Integer.parseInt(box.getName());
                     int color = 1;
-                    Piece tmp = new Piece(color, num+1);
-                    affichePieceSelected(tmp);
+                    selected = new Piece(color, num+1);
+                    affichePieceSelected(selected);
                 }
             });
             box.setLayout(new GridBagLayout());
@@ -395,8 +397,8 @@ public class PartieGUI extends javax.swing.JFrame {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     int num = Integer.parseInt(box.getName());
                     int color = 2;
-                    Piece tmp = new Piece(color, num+1);
-                    affichePieceSelected(tmp);
+                    selected = new Piece(color, num+1);
+                    affichePieceSelected(selected);
                 }
             });
             box.setLayout(new GridBagLayout());
@@ -431,8 +433,8 @@ public class PartieGUI extends javax.swing.JFrame {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     int num = Integer.parseInt(box.getName());
                     int color = 3;
-                    Piece tmp = new Piece(color, num+1);
-                    affichePieceSelected(tmp);
+                    selected = new Piece(color, num+1);
+                    affichePieceSelected(selected);
                 }
             });
             box.setLayout(new GridBagLayout());
@@ -472,10 +474,10 @@ public class PartieGUI extends javax.swing.JFrame {
                     }
         Border border = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0));
         JPanel box = new JPanel();
-        selectedPiece.add(box);
-        box.setSize(100, 100);
+        selectedPiece.setLayout(new BorderLayout());
+        selectedPiece.add(box, BorderLayout.CENTER);
+        box.setPreferredSize(new Dimension(130, 120));
         box.setBorder(border);
-        //box.setLocation(17, 20);
         box.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         for (int i = 0; i < p.getHauteur(); i++) {
@@ -497,7 +499,7 @@ public class PartieGUI extends javax.swing.JFrame {
     }
     
     private void btnRotationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRotationMouseClicked
-        Piece p = Piece.rotationPiece(this.selected);
+        Piece p = Piece.rotationPiece(selected);
         this.affichePieceSelected(p);
     }//GEN-LAST:event_btnRotationMouseClicked
 

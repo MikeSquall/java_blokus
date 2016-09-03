@@ -19,6 +19,7 @@ public class Accueil extends javax.swing.JFrame {
      */
     public Accueil() {
         initComponents();
+        this.setLocationRelativeTo(null);
         nombreJoueurs = 0;
         nomsJoueurs = new String[4];
     }
