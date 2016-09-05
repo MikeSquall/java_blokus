@@ -27,7 +27,9 @@ public class PartieGUI extends javax.swing.JFrame {
     
     int joueurActif;
     Piece selected;
+    Piece pieceDrag;
     Plateau plateau;
+    boolean blokus[];
     
     /**
      * Creates new form Partie
@@ -49,18 +51,22 @@ public class PartieGUI extends javax.swing.JFrame {
             this.j3Name.setText(noms[2]);
             this.j4Name.setText(noms[3]);
         }
+        int numCase = 0;
         for(int i = 0; i < 20; i++){
             for(int j = 0; j < 20; j++){
                 JPanel p = new JPanel();
+                p.setName(Integer.toString(numCase));
                 p.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
                 p.setSize(20, 20);
                 p.setBackground(Color.white);
                 p.setLocation(i*20, j*20);
                 board.add(p);
+                numCase++;
             }
         }
         plateau = new Plateau();
         this.creationPiecesPlateau(plateau);
+        this.blokus = new boolean[4];
         this.joueurActif = 0;
     }
 
@@ -520,6 +526,33 @@ public class PartieGUI extends javax.swing.JFrame {
         }
         // System.out.println(color.toString());
         // System.out.println("piece n°" + p.getNumeroPiece());
+    }
+    
+    private void dragPiece(){
+        
+    }
+    
+    private void caseHoverIn(){
+        
+    }
+    
+    private void caseHoverOut(){
+        
+    }
+    
+    private void drop(){
+        
+    }
+    
+    private void tourSuivant(){
+        switch(this.joueurActif){
+            case 0: case 1: case 2:
+                this.joueurActif++;
+                break;
+            case 3:
+                this.joueurActif = 0;
+                break;
+        }
     }
     
     private void btnRotationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRotationMouseClicked
