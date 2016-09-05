@@ -5,6 +5,8 @@
  */
 package blokus;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Squall
@@ -346,10 +348,11 @@ public class Piece {
         int L = select.getLargeur(),
             H = select.getHauteur();
         Piece p = new Piece(H, L, select.getNumeroPiece());
+        //JOptionPane.showMessageDialog(null, "p.num = " + p.getNumeroPiece() + "\np.hauteur = " + p.getHauteur() + "\np.largeur = "+ p.getLargeur() + "\n");
         for (int i = 0; i < L; i++) {
             for (int j = 0; j < H; j++) {
                 int x = j,
-                    y = H - 1 - i;
+                    y = L - 1 - i;
                 p.forme[x][y] = select.forme[i][j];
             }
         }
@@ -359,7 +362,8 @@ public class Piece {
     public static Piece symetriePiece(Piece select){
         int L = select.getLargeur(),
             H = select.getHauteur();
-        Piece p = new Piece(H, L, select.getNumeroPiece());
+        Piece p = new Piece(L, H, select.getNumeroPiece());
+        //JOptionPane.showMessageDialog(null, "p.num = " + p.getNumeroPiece() + "\np.hauteur = " + p.getHauteur() + "\np.largeur = "+ p.getLargeur() + "\n");
         for (int i = 0; i < L; i++) {
             for (int j = 0; j < H; j++) {
                 int x = L - i - 1,

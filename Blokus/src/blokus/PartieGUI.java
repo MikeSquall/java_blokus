@@ -61,6 +61,7 @@ public class PartieGUI extends javax.swing.JFrame {
         }
         plateau = new Plateau();
         this.creationPiecesPlateau(plateau);
+        this.joueurActif = 0;
     }
 
     private PartieGUI() {
@@ -457,41 +458,64 @@ public class PartieGUI extends javax.swing.JFrame {
     }
     
     private void affichePieceSelected(Piece p){
-        Color color = Color.white;
-        switch(p.getCouleurJoueur()){
-                        case 0: 
-                            color = Color.blue;
-                            break;
-                        case 1:
-                            color = Color.yellow;
-                            break;
-                        case 2:
-                            color = Color.red;
-                            break;
-                        case 3:
-                            color = Color.green;
-                            break;
-                    }
-        Border border = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0));
-        JPanel box = new JPanel();
-        selectedPiece.setLayout(new BorderLayout());
-        selectedPiece.add(box, BorderLayout.CENTER);
-        box.setPreferredSize(new Dimension(130, 120));
-        box.setBorder(border);
-        box.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        for (int i = 0; i < p.getHauteur(); i++) {
-            for (int j = 0; j < p.getLargeur(); j++) {
-                if(p.getForme(j,i) == 1){
-                    JPanel partiePiece = new JPanel();
-                    partiePiece.setPreferredSize(new Dimension (19, 19));
-                    partiePiece.setBackground(color);
-                    partiePiece.setBorder(border);
-                    gbc.gridx = i;
-                    gbc.gridy = j;
-                    box.add(partiePiece, gbc);
-                    partiePiece.setVisible(true);
-                } 
+        if(p.getCouleurJoueur() != joueurActif){
+            String nomJoueur = "" , couleur = "";
+            switch(joueurActif){
+                case 0:
+                    nomJoueur = j1Name.getText();
+                    couleur = "bleu";
+                    break;
+                case 1:
+                    nomJoueur = j2Name.getText();
+                    couleur = "jaune";
+                    break;
+                case 2:
+                    nomJoueur = j3Name.getText();
+                    couleur = "rouge";
+                    break;
+                case 3:
+                    nomJoueur = j4Name.getText();
+                    couleur = "vert";
+                    break;
+            }
+            JOptionPane.showMessageDialog(this, "Attention ! C'est à "+ nomJoueur +" (joueur "+ couleur +") de jouer.");
+        } else {
+            Color color = Color.white;
+            switch(p.getCouleurJoueur()){
+                            case 0: 
+                                color = Color.blue;
+                                break;
+                            case 1:
+                                color = Color.yellow;
+                                break;
+                            case 2:
+                                color = Color.red;
+                                break;
+                            case 3:
+                                color = Color.green;
+                                break;
+                        }
+            Border border = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0));
+            JPanel box = new JPanel();
+            selectedPiece.setLayout(new BorderLayout());
+            selectedPiece.add(box, BorderLayout.CENTER);
+            box.setPreferredSize(new Dimension(130, 120));
+            box.setBorder(border);
+            box.setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            for (int i = 0; i < p.getHauteur(); i++) {
+                for (int j = 0; j < p.getLargeur(); j++) {
+                    if(p.getForme(j,i) == 1){
+                        JPanel partiePiece = new JPanel();
+                        partiePiece.setPreferredSize(new Dimension (19, 19));
+                        partiePiece.setBackground(color);
+                        partiePiece.setBorder(border);
+                        gbc.gridx = i;
+                        gbc.gridy = j;
+                        box.add(partiePiece, gbc);
+                        partiePiece.setVisible(true);
+                    } 
+                }
             }
         }
         // System.out.println(color.toString());
@@ -501,11 +525,13 @@ public class PartieGUI extends javax.swing.JFrame {
     private void btnRotationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRotationMouseClicked
         Piece p = Piece.rotationPiece(selected);
         this.affichePieceSelected(p);
+        selected = p;
     }//GEN-LAST:event_btnRotationMouseClicked
 
     private void btnSymetrieMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSymetrieMouseClicked
         Piece p = Piece.symetriePiece(selected);
         this.affichePieceSelected(p);
+        selected = p;
     }//GEN-LAST:event_btnSymetrieMouseClicked
 
     /**
