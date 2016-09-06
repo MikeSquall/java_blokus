@@ -555,20 +555,22 @@ public class PartieGUI extends javax.swing.JFrame {
     }
     
     private void caseHoverIn(java.awt.event.MouseEvent e){
-        Case c = (Case)e.getSource();
-        int positionCase = c.getNumCase();
-        int L = this.selected.getLargeur();
-        int H = this.selected.getHauteur();
-        for (int i = 0; i < L; i++) {
-            for (int j = 0; j < H; j++) {
-                if(this.selected.getForme(j, i) == 1){
-                    this.board.getComponent(positionCase+j).setBackground(this.numToColor(this.selected.getCouleurJoueur()));
+        if(selected != null){    
+            Case c = (Case)e.getSource();
+            int positionCase = c.getNumCase();
+            int L = this.selected.getLargeur();
+            int H = this.selected.getHauteur();
+            for (int i = 0; i < H; i++) {
+                for (int j = 0; j < L; j++) {
+                    if(this.selected.getForme(j, i) == 1){
+                        this.board.getComponent(positionCase+j).setBackground(this.numToColor(this.selected.getCouleurJoueur()));
+                    }
                 }
+                positionCase+=20;
             }
-            positionCase+=20;
-        }
-        // debug
+            // debug
         jLabel2.setText("hauteur : " + H + "    // largeur : " + L);
+        }
     }
     
     private void caseHoverOut(java.awt.event.MouseEvent e){
