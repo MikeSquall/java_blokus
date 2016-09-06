@@ -11,13 +11,13 @@ import java.util.ArrayList;
  *
  * @author Squall
  */
-public class Plateau {
+public class CollectionPieces {
     public ArrayList<Piece> piecesBleues;
     public ArrayList<Piece> piecesJaunes;
     public ArrayList<Piece> piecesRouges;
     public ArrayList<Piece> piecesVertes;
     
-    public Plateau(){
+    public CollectionPieces(){
         this.piecesBleues = this.creationPieces(0);
         this.piecesJaunes = this.creationPieces(1);
         this.piecesRouges = this.creationPieces(2);

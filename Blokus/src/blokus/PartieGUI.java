@@ -10,12 +10,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import static java.lang.System.console;
-import java.util.ArrayList;
-import static javafx.scene.paint.Color.rgb;
+import java.awt.dnd.DropTarget;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextPane;
 import javax.swing.border.Border;
 
 
@@ -28,8 +27,9 @@ public class PartieGUI extends javax.swing.JFrame {
     int joueurActif;
     Piece selected;
     Piece pieceDrag;
-    Plateau plateau;
-    boolean blokus[];
+    CollectionPieces collecPieces;
+    boolean[] jBloked;
+    int[][] plateau = new int[20][20];
     
     /**
      * Creates new form Partie
@@ -54,19 +54,24 @@ public class PartieGUI extends javax.swing.JFrame {
         int numCase = 0;
         for(int i = 0; i < 20; i++){
             for(int j = 0; j < 20; j++){
-                JPanel p = new JPanel();
-                p.setName(Integer.toString(numCase));
-                p.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-                p.setSize(20, 20);
-                p.setBackground(Color.white);
-                p.setLocation(i*20, j*20);
-                board.add(p);
+                Case c = new Case(numCase);
+                c.setLocation(i*20, j*20);
+                c.addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseEntered(java.awt.event.MouseEvent e){
+                        caseHoverIn(e);
+                    }
+                    public void mouseExited(java.awt.event.MouseEvent e){
+                        caseHoverOut(e);
+                    }
+                });
+                board.add(c);
                 numCase++;
+                this.plateau[i][j] = -1;
             }
         }
-        plateau = new Plateau();
-        this.creationPiecesPlateau(plateau);
-        this.blokus = new boolean[4];
+        collecPieces = new CollectionPieces();
+        this.creationPiecesPlateau(collecPieces);
+        this.jBloked = new boolean[4];
         this.joueurActif = 0;
     }
 
@@ -97,6 +102,7 @@ public class PartieGUI extends javax.swing.JFrame {
         btnSymetrie = new javax.swing.JLabel();
         btnRotation = new javax.swing.JLabel();
         selectedPiece = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Partie");
@@ -250,17 +256,25 @@ public class PartieGUI extends javax.swing.JFrame {
                         .addGap(15, 15, 15))))
         );
 
+        jLabel2.setText("jLabel2");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(j1Name, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(blueBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(greenBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(j4Name, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(j1Name, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(blueBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(greenBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(j4Name, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel2)
+                        .addGap(69, 69, 69)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(57, 57, 57)
@@ -294,7 +308,9 @@ public class PartieGUI extends javax.swing.JFrame {
                                 .addComponent(blueBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(j1Name)
-                                .addGap(58, 58, 58)
+                                .addGap(24, 24, 24)
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
                                 .addComponent(j4Name)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(greenBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -316,7 +332,7 @@ public class PartieGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     // création de toutes les pièces pour chaque joueur
-    private void creationPiecesPlateau(Plateau board){
+    private void creationPiecesPlateau(CollectionPieces board){
         int compteur = 0;
         // pièces bleues
         for(Piece p : board.piecesBleues){
@@ -486,21 +502,7 @@ public class PartieGUI extends javax.swing.JFrame {
             }
             JOptionPane.showMessageDialog(this, "Attention ! C'est à "+ nomJoueur +" (joueur "+ couleur +") de jouer.");
         } else {
-            Color color = Color.white;
-            switch(p.getCouleurJoueur()){
-                            case 0: 
-                                color = Color.blue;
-                                break;
-                            case 1:
-                                color = Color.yellow;
-                                break;
-                            case 2:
-                                color = Color.red;
-                                break;
-                            case 3:
-                                color = Color.green;
-                                break;
-                        }
+            Color color = this.numToColor(p.getCouleurJoueur());
             Border border = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0));
             JPanel box = new JPanel();
             selectedPiece.setLayout(new BorderLayout());
@@ -512,7 +514,8 @@ public class PartieGUI extends javax.swing.JFrame {
             for (int i = 0; i < p.getHauteur(); i++) {
                 for (int j = 0; j < p.getLargeur(); j++) {
                     if(p.getForme(j,i) == 1){
-                        JPanel partiePiece = new JPanel();
+                        JTextPane partiePiece = new JTextPane();
+                        partiePiece.setEditable(false);
                         partiePiece.setPreferredSize(new Dimension (19, 19));
                         partiePiece.setBackground(color);
                         partiePiece.setBorder(border);
@@ -528,16 +531,53 @@ public class PartieGUI extends javax.swing.JFrame {
         // System.out.println("piece n°" + p.getNumeroPiece());
     }
     
+    private Color numToColor(int i){
+        Color c = Color.white;
+            switch(i){
+                case 0: 
+                    c = Color.blue;
+                    break;
+                case 1:
+                    c = Color.yellow;
+                    break;
+                case 2:
+                    c = Color.red;
+                    break;
+                case 3:
+                    c = Color.green;
+                    break;
+            }
+        return c;
+    }
+    
     private void dragPiece(){
         
     }
     
-    private void caseHoverIn(){
-        
+    private void caseHoverIn(java.awt.event.MouseEvent e){
+        Case c = (Case)e.getSource();
+        int positionCase = c.getNumCase();
+        int L = this.selected.getLargeur();
+        int H = this.selected.getHauteur();
+        for (int i = 0; i < L; i++) {
+            for (int j = 0; j < H; j++) {
+                if(this.selected.getForme(j, i) == 1){
+                    this.board.getComponent(positionCase+j).setBackground(this.numToColor(this.selected.getCouleurJoueur()));
+                }
+            }
+            positionCase+=20;
+        }
+        // debug
+        jLabel2.setText("hauteur : " + H + "    // largeur : " + L);
     }
     
-    private void caseHoverOut(){
-        
+    private void caseHoverOut(java.awt.event.MouseEvent e){
+        for(int i = 0; i < 400; i++){
+            Case c = (Case)(this.board.getComponent(i));
+            if(c.getOccupee() == -1){
+                c.setBackground(Color.white);
+            }
+        }
     }
     
     private void drop(){
@@ -615,6 +655,7 @@ public class PartieGUI extends javax.swing.JFrame {
     private javax.swing.JLabel j3Name;
     private javax.swing.JLabel j4Name;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel redBox;
     private javax.swing.JPanel selectedPiece;
     private javax.swing.JPanel yellowBox;

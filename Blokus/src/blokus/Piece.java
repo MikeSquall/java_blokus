@@ -279,6 +279,11 @@ public class Piece {
         this.hauteur = L;
         this.largeur = H;
         this.forme = new int[this.largeur][this.hauteur];
+        for (int i = 0; i < H; i++) {
+            for (int j = 0; j < L; j++) {
+                this.forme[i][j] = 0;
+            }
+        }
     }
 
     /**
@@ -340,8 +345,8 @@ public class Piece {
     /**
      * @param forme the forme to set
      */
-    public void setForme(int[][] forme) {
-        this.forme = forme;
+    public void setForme(int x, int y, int i) {
+        this.forme[x][y] = i;
     }
     
     public static Piece rotationPiece(Piece select){
