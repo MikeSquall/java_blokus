@@ -11,6 +11,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.dnd.DropTarget;
+import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -62,6 +63,9 @@ public class PartieGUI extends javax.swing.JFrame {
                     }
                     public void mouseExited(java.awt.event.MouseEvent e){
                         caseHoverOut(e);
+                    }
+                    public void mouseClicked(java.awt.event.MouseEvent e){
+                        drop(e);
                     }
                 });
                 board.add(c);
@@ -209,16 +213,17 @@ public class PartieGUI extends javax.swing.JFrame {
         });
 
         selectedPiece.setBorder(javax.swing.BorderFactory.createTitledBorder("Pièce sélectionnée"));
+        selectedPiece.setPreferredSize(new java.awt.Dimension(140, 130));
 
         javax.swing.GroupLayout selectedPieceLayout = new javax.swing.GroupLayout(selectedPiece);
         selectedPiece.setLayout(selectedPieceLayout);
         selectedPieceLayout.setHorizontalGroup(
             selectedPieceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 124, Short.MAX_VALUE)
+            .addGap(0, 128, Short.MAX_VALUE)
         );
         selectedPieceLayout.setVerticalGroup(
             selectedPieceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGap(0, 106, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout conteneurPieceJoueeLayout = new javax.swing.GroupLayout(conteneurPieceJouee);
@@ -281,9 +286,8 @@ public class PartieGUI extends javax.swing.JFrame {
                         .addComponent(conteneurPieceJouee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(65, 65, 65))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(board, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)))
+                        .addGap(35, 35, 35)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(j2Name, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
                     .addComponent(j3Name, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -296,33 +300,30 @@ public class PartieGUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(board, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(44, 44, 44)
-                        .addComponent(conteneurPieceJouee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(49, 49, 49))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(blueBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(j1Name)
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel2)
-                                .addGap(18, 18, 18)
-                                .addComponent(j4Name)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(greenBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(yellowBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(j2Name)
-                                .addGap(54, 54, 54)
-                                .addComponent(j3Name)
-                                .addGap(18, 18, 18)
-                                .addComponent(redBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())))
+                        .addComponent(board, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(conteneurPieceJouee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(blueBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(j1Name)
+                            .addGap(24, 24, 24)
+                            .addComponent(jLabel2)
+                            .addGap(18, 18, 18)
+                            .addComponent(j4Name)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(greenBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(yellowBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(j2Name)
+                            .addGap(54, 54, 54)
+                            .addComponent(j3Name)
+                            .addGap(18, 18, 18)
+                            .addComponent(redBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(69, Short.MAX_VALUE))
         );
 
         board.getAccessibleContext().setAccessibleName("");
@@ -348,8 +349,12 @@ public class PartieGUI extends javax.swing.JFrame {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     int num = Integer.parseInt(box.getName());
                     int color = 0;
-                    selected = new Piece(color, num+1);
-                    affichePieceSelected(selected);
+                    if(joueurActif == color){
+                        selected = new Piece(color, num+1);
+                        affichePieceSelected(selected);
+                    } else {
+                        pasTonTour(0);
+                    }
                 }
             });
             box.setLayout(new GridBagLayout());
@@ -384,8 +389,12 @@ public class PartieGUI extends javax.swing.JFrame {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     int num = Integer.parseInt(box.getName());
                     int color = 1;
-                    selected = new Piece(color, num+1);
-                    affichePieceSelected(selected);
+                    if(joueurActif == color){
+                        selected = new Piece(color, num+1);
+                        affichePieceSelected(selected);
+                    } else {
+                        pasTonTour(0);
+                    }
                 }
             });
             box.setLayout(new GridBagLayout());
@@ -420,8 +429,12 @@ public class PartieGUI extends javax.swing.JFrame {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     int num = Integer.parseInt(box.getName());
                     int color = 2;
-                    selected = new Piece(color, num+1);
-                    affichePieceSelected(selected);
+                    if(joueurActif == color){
+                        selected = new Piece(color, num+1);
+                        affichePieceSelected(selected);
+                    } else {
+                        pasTonTour(0);
+                    }
                 }
             });
             box.setLayout(new GridBagLayout());
@@ -456,8 +469,12 @@ public class PartieGUI extends javax.swing.JFrame {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     int num = Integer.parseInt(box.getName());
                     int color = 3;
-                    selected = new Piece(color, num+1);
-                    affichePieceSelected(selected);
+                    if(joueurActif == color){
+                        selected = new Piece(color, num+1);
+                        affichePieceSelected(selected);
+                    } else {
+                        pasTonTour(0);
+                    }
                 }
             });
             box.setLayout(new GridBagLayout());
@@ -479,9 +496,12 @@ public class PartieGUI extends javax.swing.JFrame {
         }
     }
     
-    private void affichePieceSelected(Piece p){
-        if(p.getCouleurJoueur() != joueurActif){
-            String nomJoueur = "" , couleur = "";
+    private void pasTonTour(int i){
+        String alert = "";
+        if(i == 0){
+            alert = "Attention ! ";
+        }
+        String nomJoueur = "" , couleur = "";
             switch(joueurActif){
                 case 0:
                     nomJoueur = j1Name.getText();
@@ -500,7 +520,12 @@ public class PartieGUI extends javax.swing.JFrame {
                     couleur = "vert";
                     break;
             }
-            JOptionPane.showMessageDialog(this, "Attention ! C'est à "+ nomJoueur +" (joueur "+ couleur +") de jouer.");
+            JOptionPane.showMessageDialog(this, alert + "C'est à "+ nomJoueur +" (joueur "+ couleur +") de jouer.");
+    }
+    
+    private void affichePieceSelected(Piece p){
+        if(p.getCouleurJoueur() != joueurActif){
+            pasTonTour(0);
         } else {
             Color color = this.numToColor(p.getCouleurJoueur());
             Border border = javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0));
@@ -531,6 +556,22 @@ public class PartieGUI extends javax.swing.JFrame {
         // System.out.println("piece n°" + p.getNumeroPiece());
     }
     
+    private void disposePieceSelected(){
+        selectedPiece.getComponent(0).setVisible(false);
+        selectedPiece.setBorder(javax.swing.BorderFactory.createTitledBorder("Pièce sélectionnée"));
+        javax.swing.GroupLayout selectedPieceLayout = new javax.swing.GroupLayout(selectedPiece);
+        selectedPiece.setLayout(selectedPieceLayout);
+        selectedPieceLayout.setHorizontalGroup(
+            selectedPieceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 124, Short.MAX_VALUE)
+        );
+        selectedPieceLayout.setVerticalGroup(
+            selectedPieceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        selectedPiece.removeAll();
+    }
+    
     private Color numToColor(int i){
         Color c = Color.white;
             switch(i){
@@ -550,10 +591,6 @@ public class PartieGUI extends javax.swing.JFrame {
         return c;
     }
     
-    private void dragPiece(){
-        
-    }
-    
     private void caseHoverIn(java.awt.event.MouseEvent e){
         if(selected != null){    
             Case c = (Case)e.getSource();
@@ -562,14 +599,15 @@ public class PartieGUI extends javax.swing.JFrame {
             int H = this.selected.getHauteur();
             for (int i = 0; i < H; i++) {
                 for (int j = 0; j < L; j++) {
-                    if(this.selected.getForme(j, i) == 1){
+                    int finLigne = positionCase / 20;
+                    if(c.getOccupee() == -1 && this.selected.getForme(j, i) == 1 && (positionCase + j < 400) && ((positionCase + j) < ((finLigne * 20) + 20))){
                         this.board.getComponent(positionCase+j).setBackground(this.numToColor(this.selected.getCouleurJoueur()));
                     }
                 }
-                positionCase+=20;
+                if(positionCase + H < 400){
+                    positionCase+=20;
+                }
             }
-            // debug
-        jLabel2.setText("hauteur : " + H + "    // largeur : " + L);
         }
     }
     
@@ -582,7 +620,53 @@ public class PartieGUI extends javax.swing.JFrame {
         }
     }
     
-    private void drop(){
+    private Boolean dropTest(java.awt.event.MouseEvent e){
+        Boolean flag = true;
+        ArrayList<Integer> caseDroppable = new ArrayList<>();
+        if(selected != null){    
+            Case c = (Case)e.getSource();
+            int numCaseCliquee = c.getNumCase();
+            int L = this.selected.getLargeur();
+            int H = this.selected.getHauteur();
+            for (int i = 0; i < H; i++) {
+                for (int j = 0; j < L; j++) {
+                    int finLigne = numCaseCliquee / 20;
+                    if(((Case)this.board.getComponent(numCaseCliquee+j)).getOccupee() == -1 && (numCaseCliquee + j < 400) && ((numCaseCliquee + j) < ((finLigne * 20) + 20))){
+                        if (selected.getForme(j, i) == 1){
+                            caseDroppable.add(numCaseCliquee+j);
+                        }
+                    } else {
+                        flag = false;
+                    }
+                }
+                if(numCaseCliquee + H < 400){
+                    numCaseCliquee+=20;
+                }
+            }
+            if(flag){
+                for(int i: caseDroppable){
+                    ((Case)this.board.getComponent(i)).setOccupee(joueurActif);
+                    plateau[i/20][i%20] = joueurActif;
+                }
+            }
+        }        
+        return flag;
+    }
+    
+    private void drop(java.awt.event.MouseEvent e){
+        if(selected != null){
+            // on vérifie si le mouvement est autorisé
+            if(dropTest(e)){ 
+                selected = null;
+                disposePieceSelected();
+                // on passe le tour au joueur suivant
+                tourSuivant();
+            } else {
+                JOptionPane.showMessageDialog(this, "Attention ! Déplacement non autorisé");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Attention ! Vous n'avez pas sélectionné de pièce");
+        }
         
     }
     
@@ -595,6 +679,7 @@ public class PartieGUI extends javax.swing.JFrame {
                 this.joueurActif = 0;
                 break;
         }
+        pasTonTour(1);
     }
     
     private void btnRotationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRotationMouseClicked
