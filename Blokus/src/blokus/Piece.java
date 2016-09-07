@@ -353,6 +353,7 @@ public class Piece {
         int L = select.getLargeur(),
             H = select.getHauteur();
         Piece p = new Piece(H, L, select.getNumeroPiece());
+        p.setCouleurJoueur(select.getCouleurJoueur());
         //JOptionPane.showMessageDialog(null, "p.num = " + p.getNumeroPiece() + "\np.hauteur = " + p.getHauteur() + "\np.largeur = "+ p.getLargeur() + "\n");
         for (int i = 0; i < L; i++) {
             for (int j = 0; j < H; j++) {
@@ -368,6 +369,7 @@ public class Piece {
         int L = select.getLargeur(),
             H = select.getHauteur();
         Piece p = new Piece(L, H, select.getNumeroPiece());
+        p.setCouleurJoueur(select.getCouleurJoueur());
         //JOptionPane.showMessageDialog(null, "p.num = " + p.getNumeroPiece() + "\np.hauteur = " + p.getHauteur() + "\np.largeur = "+ p.getLargeur() + "\n");
         for (int i = 0; i < L; i++) {
             for (int j = 0; j < H; j++) {

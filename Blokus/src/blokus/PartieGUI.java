@@ -30,7 +30,9 @@ public class PartieGUI extends javax.swing.JFrame {
     Piece pieceDrag;
     CollectionPieces collecPieces;
     boolean[] jBloked;
+    int tour;
     int[][] plateau = new int[20][20];
+    
     
     /**
      * Creates new form Partie
@@ -76,6 +78,7 @@ public class PartieGUI extends javax.swing.JFrame {
         collecPieces = new CollectionPieces();
         this.creationPiecesPlateau(collecPieces);
         this.jBloked = new boolean[4];
+        this.tour = 0;
         this.joueurActif = 0;
     }
 
@@ -106,7 +109,7 @@ public class PartieGUI extends javax.swing.JFrame {
         btnSymetrie = new javax.swing.JLabel();
         btnRotation = new javax.swing.JLabel();
         selectedPiece = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        debugLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Partie");
@@ -261,7 +264,7 @@ public class PartieGUI extends javax.swing.JFrame {
                         .addGap(15, 15, 15))))
         );
 
-        jLabel2.setText("jLabel2");
+        debugLabel.setText("jLabel2");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -278,7 +281,7 @@ public class PartieGUI extends javax.swing.JFrame {
                             .addComponent(j4Name, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel2)
+                        .addComponent(debugLabel)
                         .addGap(69, 69, 69)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -310,7 +313,7 @@ public class PartieGUI extends javax.swing.JFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(j1Name)
                             .addGap(24, 24, 24)
-                            .addComponent(jLabel2)
+                            .addComponent(debugLabel)
                             .addGap(18, 18, 18)
                             .addComponent(j4Name)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -497,6 +500,12 @@ public class PartieGUI extends javax.swing.JFrame {
     }
     
     private void pasTonTour(int i){
+        //
+        int NE = selected.getForme(selected.getLargeur(),0);
+        int NO = selected.getForme(0,0);
+        int SE = selected.getForme(selected.getLargeur()-1, selected.getHauteur()-1);
+        int SO = selected.getForme(selected.getHauteur()-1,0);
+        //    
         String alert = "";
         if(i == 0){
             alert = "Attention ! ";
@@ -587,6 +596,9 @@ public class PartieGUI extends javax.swing.JFrame {
                 case 3:
                     c = Color.green;
                     break;
+                default: 
+                    c = Color.white;
+                    break;
             }
         return c;
     }
@@ -595,6 +607,9 @@ public class PartieGUI extends javax.swing.JFrame {
         if(selected != null){    
             Case c = (Case)e.getSource();
             int positionCase = c.getNumCase();
+            //
+            debugLabel.setText("");
+            //
             int L = this.selected.getLargeur();
             int H = this.selected.getHauteur();
             for (int i = 0; i < H; i++) {
@@ -614,29 +629,31 @@ public class PartieGUI extends javax.swing.JFrame {
     private void caseHoverOut(java.awt.event.MouseEvent e){
         for(int i = 0; i < 400; i++){
             Case c = (Case)(this.board.getComponent(i));
-            if(c.getOccupee() == -1){
-                c.setBackground(Color.white);
-            }
+            c.setBackground(numToColor(c.getOccupee()));
         }
     }
     
     private Boolean dropTest(java.awt.event.MouseEvent e){
-        Boolean flag = true;
-        ArrayList<Integer> caseDroppable = new ArrayList<>();
+        Boolean flag = true; // indique si le mouvement est ok
+        ArrayList<Integer> caseDroppable = new ArrayList<>(); // liste les cases où on peut lâcher une piece
         if(selected != null){    
             Case c = (Case)e.getSource();
             int numCaseCliquee = c.getNumCase();
             int L = this.selected.getLargeur();
             int H = this.selected.getHauteur();
-            for (int i = 0; i < H; i++) {
+            for (int i = 0; i < H; i++) { // double boucle qui vérifie que la pièce peut être posée dans une case donnée
                 for (int j = 0; j < L; j++) {
                     int finLigne = numCaseCliquee / 20;
-                    if(((Case)this.board.getComponent(numCaseCliquee+j)).getOccupee() == -1 && (numCaseCliquee + j < 400) && ((numCaseCliquee + j) < ((finLigne * 20) + 20))){
-                        if (selected.getForme(j, i) == 1){
-                            caseDroppable.add(numCaseCliquee+j);
+                    try {
+                        if(((Case)this.board.getComponent(numCaseCliquee+j)).getOccupee() == -1 && (numCaseCliquee + j < 400) && ((numCaseCliquee + j) < ((finLigne * 20) + 20))){
+                            if (selected.getForme(j, i) == 1){
+                                caseDroppable.add(numCaseCliquee+j);
+                            }
+                        } else {
+                            flag = false;
                         }
-                    } else {
-                        flag = false;
+                    } catch(java.lang.ArrayIndexOutOfBoundsException error){
+                            flag = false;
                     }
                 }
                 if(numCaseCliquee + H < 400){
@@ -644,12 +661,102 @@ public class PartieGUI extends javax.swing.JFrame {
                 }
             }
             if(flag){
-                for(int i: caseDroppable){
-                    ((Case)this.board.getComponent(i)).setOccupee(joueurActif);
-                    plateau[i/20][i%20] = joueurActif;
+                if (tour < 4){
+                    flag = caseOk(c.getNumCase());
+                } else {
+                    for(int i: caseDroppable){
+                        if(caseOk(i) == false){
+                            flag = false;
+                        }
+                    }
+                }
+                if(flag){ 
+                    /*  si tout s'est bien passé, on colore les cases où la pièce est posée
+                        et on met à jour le plateau */
+                    for(int i: caseDroppable){
+                        ((Case)this.board.getComponent(i)).setOccupee(joueurActif);
+                        plateau[i%20][i/20] = joueurActif;
+                    }
                 }
             }
         }        
+        return flag;
+    }
+    
+    private Boolean caseOk(int numCase){
+        Boolean flag = true;
+        ArrayList<Integer> bordureNord  = new ArrayList<>();
+        ArrayList<Integer> bordureSud   = new ArrayList<>();
+        ArrayList<Integer> bordureEst   = new ArrayList<>();
+        ArrayList<Integer> bordureOuest = new ArrayList<>();
+        // on remplit les listes représentant les bordures du plateau
+        for (int i = 0; i < 20; i++) {
+            bordureNord.add(i*20);
+            bordureSud.add((i*20)-1);
+            bordureEst.add(380+i);
+            bordureOuest.add(i);
+        }
+        // on enlève les 'coins' des bordures est et ouest pour éviter les doublons
+        bordureEst.remove(0);
+        bordureEst.remove(18);
+        bordureOuest.remove(0);
+        bordureOuest.remove(18);
+        //
+        if(tour < 4){
+            if(((joueurActif == 0 && numCase != 0) || (numCase == 0 && selected.getForme(0,0) == 0))){
+                flag = false;
+            }
+            if((joueurActif == 1 && numCase != (380-((selected.getHauteur()-1)*20))) || (numCase == 380 && selected.getForme(0,selected.getLargeur()-1) == 0)){ 
+                // comme la partie de la piece qui est placée est en haut à gauche, on compense le décalage
+                flag = false;
+            }
+            if((joueurActif == 2 && numCase != (399-(((selected.getHauteur()-1)*20)+selected.getLargeur()-1)))){
+                flag = false;
+            }
+            if((joueurActif == 3 && numCase != 19-(selected.getLargeur()-1))){
+                flag = false;
+            }
+        } else if(bordureNord.contains(numCase)){
+            if (numCase == 0){
+                if (((Case)this.board.getComponent(numCase + 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 20)).getOccupee() == joueurActif ){
+                    flag = false;
+                }
+            } else if (numCase == 380){
+                if (((Case)this.board.getComponent(numCase + 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase - 20)).getOccupee() == joueurActif ){
+                    flag = false;
+                }
+            } else {
+                if (((Case)this.board.getComponent(numCase -20)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 20)).getOccupee() == joueurActif ){
+                    flag = false;
+                }
+            }
+        } else if(bordureSud.contains(numCase)){
+            if (numCase == 19){
+                if (((Case)this.board.getComponent(numCase - 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 20)).getOccupee() == joueurActif ){
+                    flag = false;
+                }
+            } else if (numCase == 399){
+                if (((Case)this.board.getComponent(numCase - 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase - 20)).getOccupee() == joueurActif ){
+                    flag = false;
+                }
+            } else {
+                if (((Case)this.board.getComponent(numCase -20)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase - 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 20)).getOccupee() == joueurActif ){
+                    flag = false;
+                }
+            }
+        } else if(bordureEst.contains(numCase)){
+            if (((Case)this.board.getComponent(numCase -20)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase - 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 1)).getOccupee() == joueurActif){
+                flag = false;
+            }
+        } else if(bordureOuest.contains(numCase)){
+            if (((Case)this.board.getComponent(numCase - 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 20)).getOccupee() == joueurActif ){
+                flag = false;
+            }
+        } else {
+            if (((Case)this.board.getComponent(numCase -20)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase - 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 20)).getOccupee() == joueurActif){
+                flag = false;
+            }
+        }
         return flag;
     }
     
@@ -680,6 +787,7 @@ public class PartieGUI extends javax.swing.JFrame {
                 break;
         }
         pasTonTour(1);
+        tour++;
     }
     
     private void btnRotationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRotationMouseClicked
@@ -736,13 +844,13 @@ public class PartieGUI extends javax.swing.JFrame {
     private javax.swing.JLabel btnRotation;
     private javax.swing.JLabel btnSymetrie;
     private javax.swing.JPanel conteneurPieceJouee;
+    private javax.swing.JLabel debugLabel;
     private javax.swing.JPanel greenBox;
     private javax.swing.JLabel j1Name;
     private javax.swing.JLabel j2Name;
     private javax.swing.JLabel j3Name;
     private javax.swing.JLabel j4Name;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel redBox;
     private javax.swing.JPanel selectedPiece;
     private javax.swing.JPanel yellowBox;
