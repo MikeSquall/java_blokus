@@ -362,8 +362,8 @@ public class PartieGUI extends javax.swing.JFrame {
             });
             box.setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
-            for (int i = 0; i < p.getHauteur(); i++) {
-                for (int j = 0; j < p.getLargeur(); j++) {
+            for (int i = 0; i < p.getLargeur(); i++) {
+                for (int j = 0; j < p.getHauteur(); j++) {
                     if(p.getForme(j,i) == 1){
                         JPanel partiePiece = new JPanel();
                         partiePiece.setPreferredSize(new Dimension (10, 10));
@@ -402,8 +402,8 @@ public class PartieGUI extends javax.swing.JFrame {
             });
             box.setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
-            for (int i = 0; i < p.getHauteur(); i++) {
-                for (int j = 0; j < p.getLargeur(); j++) {
+            for (int i = 0; i < p.getLargeur(); i++) {
+                for (int j = 0; j < p.getHauteur(); j++) {
                     if(p.getForme(j,i) == 1){
                         JPanel partiePiece = new JPanel();
                         partiePiece.setPreferredSize(new Dimension (10, 10));
@@ -442,8 +442,8 @@ public class PartieGUI extends javax.swing.JFrame {
             });
             box.setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
-            for (int i = 0; i < p.getHauteur(); i++) {
-                for (int j = 0; j < p.getLargeur(); j++) {
+            for (int i = 0; i < p.getLargeur(); i++) {
+                for (int j = 0; j < p.getHauteur(); j++) {
                     if(p.getForme(j,i) == 1){
                         JPanel partiePiece = new JPanel();
                         partiePiece.setPreferredSize(new Dimension (10, 10));
@@ -482,8 +482,8 @@ public class PartieGUI extends javax.swing.JFrame {
             });
             box.setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
-            for (int i = 0; i < p.getHauteur(); i++) {
-                for (int j = 0; j < p.getLargeur(); j++) {
+            for (int i = 0; i < p.getLargeur(); i++) {
+                for (int j = 0; j < p.getHauteur(); j++) {
                     if(p.getForme(j,i) == 1){
                         JPanel partiePiece = new JPanel();
                         partiePiece.setPreferredSize(new Dimension (10, 10));
@@ -499,13 +499,7 @@ public class PartieGUI extends javax.swing.JFrame {
         }
     }
     
-    private void pasTonTour(int i){
-        //
-        int NE = selected.getForme(selected.getLargeur(),0);
-        int NO = selected.getForme(0,0);
-        int SE = selected.getForme(selected.getLargeur()-1, selected.getHauteur()-1);
-        int SO = selected.getForme(selected.getHauteur()-1,0);
-        //    
+    private void pasTonTour(int i){  
         String alert = "";
         if(i == 0){
             alert = "Attention ! ";
@@ -545,8 +539,8 @@ public class PartieGUI extends javax.swing.JFrame {
             box.setBorder(border);
             box.setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
-            for (int i = 0; i < p.getHauteur(); i++) {
-                for (int j = 0; j < p.getLargeur(); j++) {
+            for (int i = 0; i < p.getLargeur(); i++) {
+                for (int j = 0; j < p.getHauteur(); j++) {
                     if(p.getForme(j,i) == 1){
                         JTextPane partiePiece = new JTextPane();
                         partiePiece.setEditable(false);
@@ -610,8 +604,8 @@ public class PartieGUI extends javax.swing.JFrame {
             //
             debugLabel.setText("");
             //
-            int L = this.selected.getLargeur();
-            int H = this.selected.getHauteur();
+            int L = this.selected.getHauteur();
+            int H = this.selected.getLargeur();
             for (int i = 0; i < H; i++) {
                 for (int j = 0; j < L; j++) {
                     int finLigne = positionCase / 20;
@@ -639,8 +633,8 @@ public class PartieGUI extends javax.swing.JFrame {
         if(selected != null){    
             Case c = (Case)e.getSource();
             int numCaseCliquee = c.getNumCase();
-            int L = this.selected.getLargeur();
-            int H = this.selected.getHauteur();
+            int L = this.selected.getHauteur();
+            int H = this.selected.getLargeur();
             for (int i = 0; i < H; i++) { // double boucle qui vérifie que la pièce peut être posée dans une case donnée
                 for (int j = 0; j < L; j++) {
                     int finLigne = numCaseCliquee / 20;
@@ -703,17 +697,17 @@ public class PartieGUI extends javax.swing.JFrame {
         bordureOuest.remove(18);
         //
         if(tour < 4){
-            if(((joueurActif == 0 && numCase != 0) || (numCase == 0 && selected.getForme(0,0) == 0))){
+            if(joueurActif == 0 && (numCase != 0 || selected.getForme(0,0) == 0)){
                 flag = false;
             }
-            if((joueurActif == 1 && numCase != (380-((selected.getHauteur()-1)*20))) || (numCase == 380 && selected.getForme(0,selected.getLargeur()-1) == 0)){ 
+            else if(joueurActif == 1 && (numCase != (380-((selected.getLargeur()-1)*20)) || selected.getForme(0,selected.getLargeur()-1) == 0)){ 
                 // comme la partie de la piece qui est placée est en haut à gauche, on compense le décalage
                 flag = false;
             }
-            if((joueurActif == 2 && numCase != (399-(((selected.getHauteur()-1)*20)+selected.getLargeur()-1)))){
+            else if(joueurActif == 2 && (numCase != (399-(((selected.getLargeur()-1)*20)+selected.getHauteur()-1)) || selected.getForme(selected.getHauteur()-1, selected.getLargeur()-1) == 0)){
                 flag = false;
             }
-            if((joueurActif == 3 && numCase != 19-(selected.getLargeur()-1))){
+            else if(joueurActif == 3 && (numCase != 19-(selected.getHauteur()-1) || selected.getForme(selected.getHauteur()-1,0) == 0)){
                 flag = false;
             }
         } else if(bordureNord.contains(numCase)){

@@ -14,8 +14,8 @@ import javax.swing.JOptionPane;
 public class Piece {
     private int numeroPiece;
     private int couleurJoueur;
-    private int hauteur;
     private int largeur;
+    private int hauteur;
     private int[][] forme;
     
     // constructeur utilisé pour créer les pièces au début du jeu
@@ -35,48 +35,48 @@ public class Piece {
                      {0,1,0}}
             */
             case 1:
-                largeur = 1;
                 hauteur = 1;
-                forme = new int[largeur][hauteur];
+                largeur = 1;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 break;
             case 2:
-                largeur = 2;
-                hauteur = 1;
-                forme = new int[largeur][hauteur];
+                hauteur = 2;
+                largeur = 1;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[1][0] = 1;
                 break;
             case 3:
-                largeur = 2;
                 hauteur = 2;
-                forme = new int[largeur][hauteur];
+                largeur = 2;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 0;
                 forme[0][1] = 1;
                 forme[1][0] = 1;
                 forme[1][1] = 1;
                 break;
             case 4:
-                largeur = 3;
-                hauteur = 1;
-                forme = new int[largeur][hauteur];
+                hauteur = 3;
+                largeur = 1;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[1][0] = 1;
                 forme[2][0] = 1;
                 break;
             case 5:
-                largeur = 2;
                 hauteur = 2;
-                forme = new int[largeur][hauteur];
+                largeur = 2;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[0][1] = 1;
                 forme[1][0] = 1;
                 forme[1][1] = 1;
                 break;
             case 6:
-                largeur = 3;
-                hauteur = 2;
-                forme = new int[largeur][hauteur];
+                hauteur = 3;
+                largeur = 2;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[0][1] = 0;
                 forme[1][0] = 1;
@@ -85,18 +85,18 @@ public class Piece {
                 forme[2][1] = 0;
                 break;
             case 7:
-                largeur = 4;
-                hauteur = 1;
-                forme = new int[largeur][hauteur];
+                hauteur = 4;
+                largeur = 1;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[1][0] = 1;
                 forme[2][0] = 1;
                 forme[3][0] = 1;
                 break;
             case 8:
-                largeur = 3;
-                hauteur = 2;
-                forme = new int[largeur][hauteur];
+                hauteur = 3;
+                largeur = 2;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[0][1] = 0;
                 forme[1][0] = 1;
@@ -105,9 +105,9 @@ public class Piece {
                 forme[2][1] = 1;
                 break;
             case 9:
-                largeur = 3;
-                hauteur = 2;
-                forme = new int[largeur][hauteur];
+                hauteur = 3;
+                largeur = 2;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[0][1] = 0;
                 forme[1][0] = 1;
@@ -116,9 +116,9 @@ public class Piece {
                 forme[2][1] = 1;
                 break;
             case 10:
-                largeur = 4;
-                hauteur = 2;
-                forme = new int[largeur][hauteur];
+                hauteur = 4;
+                largeur = 2;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[0][1] = 1;
                 forme[1][0] = 1;
@@ -129,9 +129,9 @@ public class Piece {
                 forme[3][1] = 0;
                 break;
             case 11:
-                largeur = 3;
                 hauteur = 3;
-                forme = new int[largeur][hauteur];
+                largeur = 3;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[0][1] = 0;
                 forme[0][2] = 0;
@@ -143,9 +143,9 @@ public class Piece {
                 forme[2][2] = 0;
                 break;
             case 12:
-                largeur = 3;
                 hauteur = 3;
-                forme = new int[largeur][hauteur];
+                largeur = 3;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[0][1] = 1;
                 forme[0][2] = 1;
@@ -157,9 +157,9 @@ public class Piece {
                 forme[2][2] = 0;
                 break;
             case 13:
-                largeur = 4;
-                hauteur = 2;
-                forme = new int[largeur][hauteur];
+                hauteur = 4;
+                largeur = 2;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[0][1] = 0;
                 forme[1][0] = 1;
@@ -170,9 +170,9 @@ public class Piece {
                 forme[3][1] = 1;
                 break;
             case 14:
-                largeur = 3;
                 hauteur = 3;
-                forme = new int[largeur][hauteur];
+                largeur = 3;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[0][1] = 1;
                 forme[0][2] = 0;
@@ -184,9 +184,9 @@ public class Piece {
                 forme[2][2] = 1;
                 break;
             case 15:
-                largeur = 1;
-                hauteur = 5;
-                forme = new int[largeur][hauteur];
+                hauteur = 1;
+                largeur = 5;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[0][1] = 1;
                 forme[0][2] = 1;
@@ -194,9 +194,9 @@ public class Piece {
                 forme[0][4] = 1;
                 break;
             case 16:
-                largeur = 2;
-                hauteur = 3;
-                forme = new int[largeur][hauteur];
+                hauteur = 2;
+                largeur = 3;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[0][1] = 1;
                 forme[0][2] = 1;
@@ -205,9 +205,9 @@ public class Piece {
                 forme[1][2] = 0;
                 break;
             case 17:
-                largeur = 3;
                 hauteur = 3;
-                forme = new int[largeur][hauteur];
+                largeur = 3;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[0][1] = 1;
                 forme[0][2] = 0;
@@ -219,9 +219,9 @@ public class Piece {
                 forme[2][2] = 1;
                 break;
             case 18:
-                largeur = 2;
-                hauteur = 3;
-                forme = new int[largeur][hauteur];
+                hauteur = 2;
+                largeur = 3;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[0][1] = 1;
                 forme[0][2] = 1;
@@ -230,9 +230,9 @@ public class Piece {
                 forme[1][2] = 1;
                 break;
             case 19:
-                largeur = 3;
                 hauteur = 3;
-                forme = new int[largeur][hauteur];
+                largeur = 3;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 0;
                 forme[0][1] = 1;
                 forme[0][2] = 0;
@@ -244,9 +244,9 @@ public class Piece {
                 forme[2][2] = 1;
                 break;
             case 20:
-                largeur = 3;
                 hauteur = 3;
-                forme = new int[largeur][hauteur];
+                largeur = 3;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 0;
                 forme[0][1] = 1;
                 forme[0][2] = 0;
@@ -258,9 +258,9 @@ public class Piece {
                 forme[2][2] = 0;
                 break;
             case 21:
-                largeur = 4;
-                hauteur = 2;
-                forme = new int[largeur][hauteur];
+                hauteur = 4;
+                largeur = 2;
+                forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[0][1] = 0;
                 forme[1][0] = 1;
@@ -276,9 +276,9 @@ public class Piece {
     // constructeur utilisé pour créer les pièces lors de rotation
     public Piece(int H, int L, int num){
         this.numeroPiece = num;
-        this.hauteur = L;
-        this.largeur = H;
-        this.forme = new int[this.largeur][this.hauteur];
+        this.largeur = L;
+        this.hauteur = H;
+        this.forme = new int[this.hauteur][this.largeur];
         for (int i = 0; i < H; i++) {
             for (int j = 0; j < L; j++) {
                 this.forme[i][j] = 0;
@@ -308,20 +308,6 @@ public class Piece {
     }
     
     /**
-     * @return the hauteur
-     */
-    public int getHauteur() {
-        return hauteur;
-    }
-
-    /**
-     * @param hauteur the hauteur to set
-     */
-    public void setHauteur(int hauteur) {
-        this.hauteur = hauteur;
-    }
-
-    /**
      * @return the largeur
      */
     public int getLargeur() {
@@ -333,6 +319,20 @@ public class Piece {
      */
     public void setLargeur(int largeur) {
         this.largeur = largeur;
+    }
+
+    /**
+     * @return the hauteur
+     */
+    public int getHauteur() {
+        return hauteur;
+    }
+
+    /**
+     * @param hauteur the hauteur to set
+     */
+    public void setHauteur(int hauteur) {
+        this.hauteur = hauteur;
     }
 
     /**
@@ -350,11 +350,11 @@ public class Piece {
     }
     
     public static Piece rotationPiece(Piece select){
-        int L = select.getLargeur(),
-            H = select.getHauteur();
+        int L = select.getHauteur(),
+            H = select.getLargeur();
         Piece p = new Piece(H, L, select.getNumeroPiece());
         p.setCouleurJoueur(select.getCouleurJoueur());
-        //JOptionPane.showMessageDialog(null, "p.num = " + p.getNumeroPiece() + "\np.hauteur = " + p.getHauteur() + "\np.largeur = "+ p.getLargeur() + "\n");
+        //JOptionPane.showMessageDialog(null, "p.num = " + p.getNumeroPiece() + "\np.largeur = " + p.getHauteur() + "\np.hauteur = "+ p.getLargeur() + "\n");
         for (int i = 0; i < L; i++) {
             for (int j = 0; j < H; j++) {
                 int x = j,
@@ -366,11 +366,11 @@ public class Piece {
     }
     
     public static Piece symetriePiece(Piece select){
-        int L = select.getLargeur(),
-            H = select.getHauteur();
+        int L = select.getHauteur(),
+            H = select.getLargeur();
         Piece p = new Piece(L, H, select.getNumeroPiece());
         p.setCouleurJoueur(select.getCouleurJoueur());
-        //JOptionPane.showMessageDialog(null, "p.num = " + p.getNumeroPiece() + "\np.hauteur = " + p.getHauteur() + "\np.largeur = "+ p.getLargeur() + "\n");
+        //JOptionPane.showMessageDialog(null, "p.num = " + p.getNumeroPiece() + "\np.largeur = " + p.getHauteur() + "\np.hauteur = "+ p.getLargeur() + "\n");
         for (int i = 0; i < L; i++) {
             for (int j = 0; j < H; j++) {
                 int x = L - i - 1,
