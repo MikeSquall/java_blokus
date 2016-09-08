@@ -10,5 +10,29 @@ package blokus;
  * @author Squall
  */
 public class Joueur {
+    String nom;
+    int couleur;
+    int points;
     
+    public Joueur(String name, int color){
+        this.nom = name;
+        this.couleur = color;
+        this.points = -89;
+    }
+    
+    public String getNom(){
+        return this.nom;
+    }
+    
+    public int getCouleur(){
+        return this.couleur;
+    }
+    
+    public int getPoints(){
+        return this.points;
+    }
+    
+    public void setPoints(int valeur){
+        this.points += valeur;
+    }
 }

@@ -10,9 +10,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.dnd.DropTarget;
 import java.util.ArrayList;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
@@ -33,26 +31,25 @@ public class PartieGUI extends javax.swing.JFrame {
     int tour;
     int[][] plateau = new int[20][20];
     
-    
     /**
      * Creates new form Partie
      */
-    public PartieGUI(String[] noms) {
+    public PartieGUI(Joueur[] noms) {
         initComponents();
         this.setLocationRelativeTo(null);
         btnRotation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blokus/btnRotation.png")));
         btnSymetrie.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blokus/btnSymetrie.png")));
-        this.j1Name.setText(noms[0]);
-        this.j2Name.setText(noms[1]);
+        this.j1Name.setText(noms[0].getNom());
+        this.j2Name.setText(noms[1].getNom());
         if(noms[2] == null && noms[3] == null){
-            this.j3Name.setText(noms[0]);
-            this.j4Name.setText(noms[1]);
+            this.j3Name.setText(noms[0].getNom());
+            this.j4Name.setText(noms[1].getNom());
         } else if(noms[2] != null && noms[3] == null){
-            this.j3Name.setText(noms[2]);
-            this.j4Name.setText(noms[0]);
+            this.j3Name.setText(noms[2].getNom());
+            this.j4Name.setText(noms[0].getNom());
         } else if(noms[2] != null && noms[3] != null){
-            this.j3Name.setText(noms[2]);
-            this.j4Name.setText(noms[3]);
+            this.j3Name.setText(noms[2].getNom());
+            this.j4Name.setText(noms[3].getNom());
         }
         int numCase = 0;
         for(int i = 0; i < 20; i++){
@@ -134,7 +131,6 @@ public class PartieGUI extends javax.swing.JFrame {
         );
 
         blueBox.setBackground(new java.awt.Color(220, 220, 245));
-        blueBox.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 200)));
 
         javax.swing.GroupLayout blueBoxLayout = new javax.swing.GroupLayout(blueBox);
         blueBox.setLayout(blueBoxLayout);
@@ -148,7 +144,6 @@ public class PartieGUI extends javax.swing.JFrame {
         );
 
         greenBox.setBackground(new java.awt.Color(204, 255, 204));
-        greenBox.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 200, 0)));
 
         javax.swing.GroupLayout greenBoxLayout = new javax.swing.GroupLayout(greenBox);
         greenBox.setLayout(greenBoxLayout);
@@ -162,7 +157,6 @@ public class PartieGUI extends javax.swing.JFrame {
         );
 
         redBox.setBackground(new java.awt.Color(255, 204, 204));
-        redBox.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(200, 0, 0)));
 
         javax.swing.GroupLayout redBoxLayout = new javax.swing.GroupLayout(redBox);
         redBox.setLayout(redBoxLayout);
@@ -176,7 +170,6 @@ public class PartieGUI extends javax.swing.JFrame {
         );
 
         yellowBox.setBackground(new java.awt.Color(255, 255, 204));
-        yellowBox.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(200, 200, 0)));
 
         javax.swing.GroupLayout yellowBoxLayout = new javax.swing.GroupLayout(yellowBox);
         yellowBox.setLayout(yellowBoxLayout);
@@ -758,6 +751,24 @@ public class PartieGUI extends javax.swing.JFrame {
         if(selected != null){
             // on vérifie si le mouvement est autorisé
             if(dropTest(e)){ 
+                // on enlève la pièce jouée de la collection du joueur
+                switch(joueurActif){
+                    case 0:
+                        blueBox.getComponent(selected.getNumeroPiece()-1).setVisible(false);
+                        break;
+                    case 1 :
+                        yellowBox.getComponent(selected.getNumeroPiece()-1).setVisible(false);
+                        break;
+                    case 2:
+                        redBox.getComponent(selected.getNumeroPiece()-1).setVisible(false);
+                        break;
+                    case 3:
+                        greenBox.getComponent(selected.getNumeroPiece()-1).setVisible(false);
+                        break;
+                }
+                // on met à jour ses points
+                
+                // on réinitialise le bloc 'pièce sélectionnée'
                 selected = null;
                 disposePieceSelected();
                 // on passe le tour au joueur suivant

@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 public class Accueil extends javax.swing.JFrame {
     protected static int nombreJoueurs;
     protected static String[] nomsJoueurs;
+    protected static Joueur[] tabJoueurs;
     /**
      * Creates new form Accueil
      */
@@ -21,7 +22,8 @@ public class Accueil extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         nombreJoueurs = 0;
-        nomsJoueurs = new String[4];
+        //nomsJoueurs = new String[4];
+        this.tabJoueurs = new Joueur[4];
     }
     
     /**
@@ -90,11 +92,12 @@ public class Accueil extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Le nom ne peut pas être vide");
                 s= JOptionPane.showInputDialog(this, "Nom du joueur n°" + (i+1) + " ?");
             }
-            nomsJoueurs[i] = s;
+            //nomsJoueurs[i] = s;
+            this.tabJoueurs[i] = new Joueur(s,i);
         }
         
         // lancement partie
-        PartieGUI partie = new PartieGUI(nomsJoueurs);
+        PartieGUI partie = new PartieGUI(tabJoueurs);
         partie.setVisible(true);
     }//GEN-LAST:event_btnJouerActionPerformed
 

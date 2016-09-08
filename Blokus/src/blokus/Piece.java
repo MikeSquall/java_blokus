@@ -17,6 +17,7 @@ public class Piece {
     private int largeur;
     private int hauteur;
     private int[][] forme;
+    private int valeur;
     
     // constructeur utilisé pour créer les pièces au début du jeu
     public Piece(int couleur, int numPiece){
@@ -39,6 +40,7 @@ public class Piece {
                 largeur = 1;
                 forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
+                valeur = 1;
                 break;
             case 2:
                 hauteur = 2;
@@ -46,6 +48,7 @@ public class Piece {
                 forme = new int[hauteur][largeur];
                 forme[0][0] = 1;
                 forme[1][0] = 1;
+                valeur = 2;
                 break;
             case 3:
                 hauteur = 2;
@@ -55,6 +58,7 @@ public class Piece {
                 forme[0][1] = 1;
                 forme[1][0] = 1;
                 forme[1][1] = 1;
+                valeur = 3;
                 break;
             case 4:
                 hauteur = 3;
@@ -63,6 +67,7 @@ public class Piece {
                 forme[0][0] = 1;
                 forme[1][0] = 1;
                 forme[2][0] = 1;
+                valeur = 3;
                 break;
             case 5:
                 hauteur = 2;
@@ -72,6 +77,7 @@ public class Piece {
                 forme[0][1] = 1;
                 forme[1][0] = 1;
                 forme[1][1] = 1;
+                valeur = 4;
                 break;
             case 6:
                 hauteur = 3;
@@ -83,6 +89,7 @@ public class Piece {
                 forme[1][1] = 1;
                 forme[2][0] = 1;
                 forme[2][1] = 0;
+                valeur = 4;
                 break;
             case 7:
                 hauteur = 4;
@@ -92,6 +99,7 @@ public class Piece {
                 forme[1][0] = 1;
                 forme[2][0] = 1;
                 forme[3][0] = 1;
+                valeur = 4;
                 break;
             case 8:
                 hauteur = 3;
@@ -103,6 +111,7 @@ public class Piece {
                 forme[1][1] = 0;
                 forme[2][0] = 1;
                 forme[2][1] = 1;
+                valeur = 4;
                 break;
             case 9:
                 hauteur = 3;
@@ -114,6 +123,7 @@ public class Piece {
                 forme[1][1] = 1;
                 forme[2][0] = 0;
                 forme[2][1] = 1;
+                valeur = 4;
                 break;
             case 10:
                 hauteur = 4;
@@ -127,6 +137,7 @@ public class Piece {
                 forme[2][1] = 0;
                 forme[3][0] = 1;
                 forme[3][1] = 0;
+                valeur = 5;
                 break;
             case 11:
                 hauteur = 3;
@@ -141,6 +152,7 @@ public class Piece {
                 forme[2][0] = 1;
                 forme[2][1] = 0;
                 forme[2][2] = 0;
+                valeur = 5;
                 break;
             case 12:
                 hauteur = 3;
@@ -155,6 +167,7 @@ public class Piece {
                 forme[2][0] = 1;
                 forme[2][1] = 0;
                 forme[2][2] = 0;
+                valeur = 5;
                 break;
             case 13:
                 hauteur = 4;
@@ -168,6 +181,7 @@ public class Piece {
                 forme[2][1] = 1;
                 forme[3][0] = 0;
                 forme[3][1] = 1;
+                valeur = 5;
                 break;
             case 14:
                 hauteur = 3;
@@ -182,6 +196,7 @@ public class Piece {
                 forme[2][0] = 0;
                 forme[2][1] = 1;
                 forme[2][2] = 1;
+                valeur = 5;
                 break;
             case 15:
                 hauteur = 1;
@@ -192,6 +207,7 @@ public class Piece {
                 forme[0][2] = 1;
                 forme[0][3] = 1;
                 forme[0][4] = 1;
+                valeur = 5;
                 break;
             case 16:
                 hauteur = 2;
@@ -203,6 +219,7 @@ public class Piece {
                 forme[1][0] = 1;
                 forme[1][1] = 1;
                 forme[1][2] = 0;
+                valeur = 5;
                 break;
             case 17:
                 hauteur = 3;
@@ -217,6 +234,7 @@ public class Piece {
                 forme[2][0] = 0;
                 forme[2][1] = 0;
                 forme[2][2] = 1;
+                valeur = 5;
                 break;
             case 18:
                 hauteur = 2;
@@ -228,6 +246,7 @@ public class Piece {
                 forme[1][0] = 1;
                 forme[1][1] = 0;
                 forme[1][2] = 1;
+                valeur = 5;
                 break;
             case 19:
                 hauteur = 3;
@@ -242,6 +261,7 @@ public class Piece {
                 forme[2][0] = 0;
                 forme[2][1] = 0;
                 forme[2][2] = 1;
+                valeur = 5;
                 break;
             case 20:
                 hauteur = 3;
@@ -256,6 +276,7 @@ public class Piece {
                 forme[2][0] = 0;
                 forme[2][1] = 1;
                 forme[2][2] = 0;
+                valeur = 5;
                 break;
             case 21:
                 hauteur = 4;
@@ -269,6 +290,7 @@ public class Piece {
                 forme[2][1] = 0;
                 forme[3][0] = 1;
                 forme[3][1] = 0;
+                valeur = 5;
                 break;
         }
     }
