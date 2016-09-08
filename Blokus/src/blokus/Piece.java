@@ -371,6 +371,10 @@ public class Piece {
         this.forme[x][y] = i;
     }
     
+    public int getValeur(){
+        return this.valeur;
+    }
+    
     public static Piece rotationPiece(Piece select){
         int L = select.getHauteur(),
             H = select.getLargeur();

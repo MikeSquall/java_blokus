@@ -10,9 +10,9 @@ package blokus;
  * @author Squall
  */
 public class Joueur {
-    String nom;
-    int couleur;
-    int points;
+    private String nom;
+    private int couleur;
+    private int points;
     
     public Joueur(String name, int color){
         this.nom = name;

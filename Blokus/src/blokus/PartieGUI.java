@@ -30,6 +30,7 @@ public class PartieGUI extends javax.swing.JFrame {
     boolean[] jBloked;
     int tour;
     int[][] plateau = new int[20][20];
+    Joueur[] players = new Joueur[4];
     
     /**
      * Creates new form Partie
@@ -39,16 +40,25 @@ public class PartieGUI extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         btnRotation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blokus/btnRotation.png")));
         btnSymetrie.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blokus/btnSymetrie.png")));
+        
+        players[0] = noms[0];
         this.j1Name.setText(noms[0].getNom());
+        players[1] = noms[1];
         this.j2Name.setText(noms[1].getNom());
         if(noms[2] == null && noms[3] == null){
+            players[2] = noms[0];
             this.j3Name.setText(noms[0].getNom());
+            players[3] = noms[1];
             this.j4Name.setText(noms[1].getNom());
         } else if(noms[2] != null && noms[3] == null){
+            players[2] = noms[2];
             this.j3Name.setText(noms[2].getNom());
+            players[3] = noms[0];
             this.j4Name.setText(noms[0].getNom());
         } else if(noms[2] != null && noms[3] != null){
+            players[2] = noms[2];
             this.j3Name.setText(noms[2].getNom());
+            players[3] = noms[3];
             this.j4Name.setText(noms[3].getNom());
         }
         int numCase = 0;
@@ -626,10 +636,10 @@ public class PartieGUI extends javax.swing.JFrame {
         if(selected != null){    
             Case c = (Case)e.getSource();
             int numCaseCliquee = c.getNumCase();
-            int L = this.selected.getHauteur();
-            int H = this.selected.getLargeur();
-            for (int i = 0; i < H; i++) { // double boucle qui vérifie que la pièce peut être posée dans une case donnée
-                for (int j = 0; j < L; j++) {
+            int H = this.selected.getHauteur();
+            int L = this.selected.getLargeur();
+            for (int i = 0; i < L; i++) { // double boucle qui vérifie que la forme rentre en entier
+                for (int j = 0; j < H; j++) {
                     int finLigne = numCaseCliquee / 20;
                     try {
                         if(((Case)this.board.getComponent(numCaseCliquee+j)).getOccupee() == -1 && (numCaseCliquee + j < 400) && ((numCaseCliquee + j) < ((finLigne * 20) + 20))){
@@ -648,25 +658,27 @@ public class PartieGUI extends javax.swing.JFrame {
                 }
             }
             if(flag){
-                if (tour < 4){
+                if (tour < 4){ // test du 1er tour car caseDroppable est vide
                     flag = caseOk(c.getNumCase());
-                } else {
+                } else { // on récupère les cases dont les coins sont de la couleur du joueur actif
+                    ArrayList<Integer> possibilites = toucheCoin();
+                    flag = false; // on inverse le flaf pour tester si on trouve au moins une occurence vraie
                     for(int i: caseDroppable){
-                        if(caseOk(i) == false){
-                            flag = false;
+                        if(caseOk(i)){
+                            if (possibilites.contains(i))
+                                //System.out.println(i + " est dans possibilités");
+                                flag = true;
                         }
                     }
                 }
-                if(flag){ 
-                    /*  si tout s'est bien passé, on colore les cases où la pièce est posée
-                        et on met à jour le plateau */
-                    for(int i: caseDroppable){
-                        ((Case)this.board.getComponent(i)).setOccupee(joueurActif);
-                        plateau[i%20][i/20] = joueurActif;
+                if (flag == true){
+                    for(int j: caseDroppable){
+                        ((Case)this.board.getComponent(j)).setOccupee(joueurActif);
+                        plateau[j%20][j/20] = joueurActif;
                     }
                 }
             }
-        }        
+        }
         return flag;
     }
     
@@ -679,7 +691,7 @@ public class PartieGUI extends javax.swing.JFrame {
         // on remplit les listes représentant les bordures du plateau
         for (int i = 0; i < 20; i++) {
             bordureNord.add(i*20);
-            bordureSud.add((i*20)-1);
+            bordureSud.add((i*20)+19);
             bordureEst.add(380+i);
             bordureOuest.add(i);
         }
@@ -747,6 +759,96 @@ public class PartieGUI extends javax.swing.JFrame {
         return flag;
     }
     
+    private ArrayList<Integer> toucheCoin(){
+        ArrayList<Integer> bordureNord  = new ArrayList<>();
+        ArrayList<Integer> bordureSud   = new ArrayList<>();
+        ArrayList<Integer> bordureEst   = new ArrayList<>();
+        ArrayList<Integer> bordureOuest = new ArrayList<>();
+        ArrayList<Integer> casesJouables = new ArrayList<>();
+        // on remplit les listes représentant les bordures du plateau
+        for (int i = 0; i < 20; i++) {
+            bordureNord.add(i*20);
+            bordureSud.add((i*20)+19);
+            bordureEst.add(380+i);
+            bordureOuest.add(i);
+        }
+        // on enlève les 'coins' des bordures est et ouest pour éviter les doublons
+        bordureEst.remove(0);
+        bordureEst.remove(18);
+        bordureOuest.remove(0);
+        bordureOuest.remove(18);
+        
+        for (int i = 0; i < 400; i++) {
+            Case caseTestee = ((Case)board.getComponent(i));
+            if (caseTestee.getOccupee() == joueurActif){
+                if(bordureNord.contains(caseTestee.getNumCase())){
+                    if(caseTestee.getNumCase() == 0){
+                        if(((Case)board.getComponent(21)).getOccupee() == -1){
+                            casesJouables.add(21);
+                        }
+                    } else if (caseTestee.getNumCase() == 380){
+                        if(((Case)board.getComponent(361)).getOccupee() == -1){
+                            casesJouables.add(361);
+                        }
+                    } else {
+                        if(((Case)board.getComponent(i-19)).getOccupee() == -1){
+                            casesJouables.add(i-19);
+                        }
+                        if(((Case)board.getComponent(i+21)).getOccupee() == -1){
+                            casesJouables.add(i+21);
+                        }
+                    }
+                } else if(bordureSud.contains(caseTestee.getNumCase())){
+                    if(caseTestee.getNumCase() == 19){
+                        if(((Case)board.getComponent(38)).getOccupee() == -1){
+                            casesJouables.add(38);
+                        }
+                    } else if (caseTestee.getNumCase() == 399){
+                        if(((Case)board.getComponent(378)).getOccupee() == -1){
+                            casesJouables.add(378);
+                        }
+                    } else {
+                        if(((Case)board.getComponent(i+19)).getOccupee() == -1){
+                            casesJouables.add(i+19);
+                        }
+                        if(((Case)board.getComponent(i-21)).getOccupee() == -1){
+                            casesJouables.add(i-21);
+                        }
+                    }
+                } else if(bordureEst.contains(caseTestee.getNumCase())){
+                    if(((Case)board.getComponent(i-19)).getOccupee() == -1){
+                        casesJouables.add(i-19);
+                    }
+                    if(((Case)board.getComponent(i-21)).getOccupee() == -1){
+                        casesJouables.add(i-21);
+                    }
+                } else if(bordureOuest.contains(caseTestee.getNumCase())){
+                    if(((Case)board.getComponent(i+19)).getOccupee() == -1){
+                        casesJouables.add(i+19);
+                    }
+                    if(((Case)board.getComponent(i+21)).getOccupee() == -1){
+                        casesJouables.add(i+21);
+                    }
+                } else { // case non située en bordure de plateau
+                    if(((Case)board.getComponent(i-19)).getOccupee() == -1){
+                        casesJouables.add(i-19);
+                    }
+                    if(((Case)board.getComponent(i-21)).getOccupee() == -1){
+                        casesJouables.add(i+21);
+                    }
+                    if(((Case)board.getComponent(i+19)).getOccupee() == -1){
+                        casesJouables.add(i+19);
+                    }
+                    if(((Case)board.getComponent(i+21)).getOccupee() == -1){
+                        casesJouables.add(i+21);
+                    }
+                }
+            }
+        }
+        
+        return casesJouables;
+    }
+    
     private void drop(java.awt.event.MouseEvent e){
         if(selected != null){
             // on vérifie si le mouvement est autorisé
@@ -767,7 +869,7 @@ public class PartieGUI extends javax.swing.JFrame {
                         break;
                 }
                 // on met à jour ses points
-                
+                players[joueurActif].setPoints(selected.getValeur());
                 // on réinitialise le bloc 'pièce sélectionnée'
                 selected = null;
                 disposePieceSelected();
