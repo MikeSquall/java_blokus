@@ -8,6 +8,7 @@ package blokus;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class PartieGUI extends javax.swing.JFrame {
     Joueur[] players = new Joueur[4];
     String msgErreur = "";
     DebugPlateau dp = new DebugPlateau(plateau);
+    Font font;
     
     /**
      * Creates new form Partie
@@ -90,6 +92,7 @@ public class PartieGUI extends javax.swing.JFrame {
         this.jBloked = 0;
         this.tour = 0;
         this.joueurActif = 0;
+        this.font = j1Name.getFont();
     }
 
     private PartieGUI() {
@@ -119,7 +122,6 @@ public class PartieGUI extends javax.swing.JFrame {
         btnSymetrie = new javax.swing.JLabel();
         btnRotation = new javax.swing.JLabel();
         selectedPiece = new javax.swing.JPanel();
-        debugLabel = new javax.swing.JLabel();
         btnBloked = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -196,12 +198,16 @@ public class PartieGUI extends javax.swing.JFrame {
             .addGap(0, 250, Short.MAX_VALUE)
         );
 
+        j1Name.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         j1Name.setText("joueur1");
 
+        j4Name.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         j4Name.setText("joueur4");
 
+        j2Name.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         j2Name.setText("joueur2");
 
+        j3Name.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         j3Name.setText("joueur3");
 
         conteneurPieceJouee.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
@@ -271,8 +277,6 @@ public class PartieGUI extends javax.swing.JFrame {
                         .addGap(15, 15, 15))))
         );
 
-        debugLabel.setText("jLabel2");
-
         btnBloked.setText("Je suis bloqué !");
         btnBloked.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -285,18 +289,13 @@ public class PartieGUI extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(j1Name, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(blueBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(greenBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(j4Name, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(debugLabel)
-                        .addGap(69, 69, 69)))
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(greenBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(j1Name, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(blueBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(j4Name, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(57, 57, 57)
@@ -329,9 +328,7 @@ public class PartieGUI extends javax.swing.JFrame {
                         .addComponent(blueBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(j1Name)
-                        .addGap(24, 24, 24)
-                        .addComponent(debugLabel)
-                        .addGap(18, 18, 18)
+                        .addGap(58, 58, 58)
                         .addComponent(j4Name)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(greenBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -620,9 +617,7 @@ public class PartieGUI extends javax.swing.JFrame {
         if(selected != null){    
             Case c = (Case)e.getSource();
             int positionCase = c.getNumCase();
-            //
-            debugLabel.setText("");
-            //
+            
             int L = this.selected.getHauteur();
             int H = this.selected.getLargeur();
             for (int i = 0; i < H; i++) {
@@ -1085,11 +1080,48 @@ public class PartieGUI extends javax.swing.JFrame {
     }
     
     private void tourSuivant(){
+        String j4Tmp = this.j4Name.getText();
+        Font bold = new Font(font.getFontName(), Font.BOLD, font.getSize());
         switch(this.joueurActif){
-            case 0: case 1: case 2:
+            case 0:
+                j1Name.setFont(font);
+                j1Name.setOpaque(false);
+                j2Name.setFont(bold);
+                j2Name.setBackground(Color.yellow);
+                j2Name.setOpaque(true);
+                this.joueurActif++;
+                break;
+            case 1: 
+                j2Name.setFont(font);
+                j2Name.setOpaque(false);
+                j3Name.setFont(bold);
+                j3Name.setBackground(Color.red);
+                j3Name.setOpaque(true);
+                this.joueurActif++;
+                break;
+            case 2:
+                j3Name.setFont(font);
+                j3Name.setOpaque(false);
+                j4Name.setFont(bold);
+                j4Name.setBackground(Color.green);
+                j4Name.setOpaque(true);
                 this.joueurActif++;
                 break;
             case 3:
+                j4Name.setFont(font);
+                j4Name.setOpaque(false);
+                j1Name.setFont(bold);
+                j1Name.setBackground(Color.cyan);
+                j1Name.setOpaque(true);
+                if(this.nombreReelJoueur == 3){
+                    if(j4Tmp == j1Name.getText()){
+                        j4Name.setText(j2Name.getText());
+                    } else if(j4Tmp == j2Name.getText()){
+                        j4Name.setText(j3Name.getText());
+                    } else if(j4Tmp == j3Name.getText()){
+                        j4Name.setText(j1Name.getText());
+                    } 
+                }
                 this.joueurActif = 0;
                 break;
         }
@@ -1299,7 +1331,6 @@ public class PartieGUI extends javax.swing.JFrame {
     private javax.swing.JLabel btnRotation;
     private javax.swing.JLabel btnSymetrie;
     private javax.swing.JPanel conteneurPieceJouee;
-    private javax.swing.JLabel debugLabel;
     private javax.swing.JPanel greenBox;
     private javax.swing.JLabel j1Name;
     private javax.swing.JLabel j2Name;

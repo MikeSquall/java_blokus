@@ -26,6 +26,10 @@ public class Joueur {
         return this.nom;
     }
     
+    public void setNom(String name){
+        this.nom = name;
+    }
+    
     public int getCouleur(){
         return this.couleur;
     }
