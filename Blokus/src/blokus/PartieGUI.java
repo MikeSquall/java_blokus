@@ -119,10 +119,11 @@ public class PartieGUI extends javax.swing.JFrame {
         btnRotation = new javax.swing.JLabel();
         selectedPiece = new javax.swing.JPanel();
         debugLabel = new javax.swing.JLabel();
+        btnBloked = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Partie");
-        setPreferredSize(new java.awt.Dimension(1024, 700));
+        setPreferredSize(new java.awt.Dimension(1024, 720));
         setResizable(false);
 
         board.setBackground(new java.awt.Color(255, 255, 255));
@@ -271,6 +272,13 @@ public class PartieGUI extends javax.swing.JFrame {
 
         debugLabel.setText("jLabel2");
 
+        btnBloked.setText("Je suis bloqué !");
+        btnBloked.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBlokedActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -302,6 +310,10 @@ public class PartieGUI extends javax.swing.JFrame {
                     .addComponent(redBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(yellowBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnBloked)
+                .addGap(428, 428, 428))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -312,26 +324,27 @@ public class PartieGUI extends javax.swing.JFrame {
                         .addComponent(board, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(conteneurPieceJouee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(blueBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(j1Name)
-                            .addGap(24, 24, 24)
-                            .addComponent(debugLabel)
-                            .addGap(18, 18, 18)
-                            .addComponent(j4Name)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(greenBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(yellowBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(j2Name)
-                            .addGap(54, 54, 54)
-                            .addComponent(j3Name)
-                            .addGap(18, 18, 18)
-                            .addComponent(redBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(69, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(blueBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(j1Name)
+                        .addGap(24, 24, 24)
+                        .addComponent(debugLabel)
+                        .addGap(18, 18, 18)
+                        .addComponent(j4Name)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(greenBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(yellowBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(j2Name)
+                        .addGap(54, 54, 54)
+                        .addComponent(j3Name)
+                        .addGap(18, 18, 18)
+                        .addComponent(redBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnBloked)
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         board.getAccessibleContext().setAccessibleName("");
@@ -1076,7 +1089,11 @@ public class PartieGUI extends javax.swing.JFrame {
                 this.joueurActif = 0;
                 break;
         }
-        pasTonTour(1);
+        if(players[joueurActif].getBlok()){
+           tourSuivant(); 
+        } else {
+            pasTonTour(1);
+        }
         //dp = new DebugPlateau(plateau);
         //dp.setVisible(true);
         tour++;
@@ -1093,6 +1110,27 @@ public class PartieGUI extends javax.swing.JFrame {
         this.affichePieceSelected(p);
         selected = p;
     }//GEN-LAST:event_btnSymetrieMouseClicked
+
+    private void btnBlokedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBlokedActionPerformed
+        players[joueurActif].setBlok();
+        String couleur = "";
+        switch(joueurActif){
+                case 0:
+                    couleur = "bleu";
+                    break;
+                case 1:
+                    couleur = "jaune";
+                    break;
+                case 2:
+                    couleur = "rouge";
+                    break;
+                case 3:
+                    couleur = "vert";
+                    break;
+            }
+        JOptionPane.showMessageDialog(this, players[joueurActif].getNom() + " (" + couleur + ") est bloqué !\nIl ne pourra plus jouer durant cette partie.");
+        tourSuivant();
+    }//GEN-LAST:event_btnBlokedActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1133,6 +1171,7 @@ public class PartieGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel blueBox;
     private javax.swing.JPanel board;
+    private javax.swing.JButton btnBloked;
     private javax.swing.JLabel btnRotation;
     private javax.swing.JLabel btnSymetrie;
     private javax.swing.JPanel conteneurPieceJouee;

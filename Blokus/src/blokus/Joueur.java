@@ -13,11 +13,13 @@ public class Joueur {
     private String nom;
     private int couleur;
     private int points;
+    private boolean blok;
     
     public Joueur(String name, int color){
         this.nom = name;
         this.couleur = color;
         this.points = -89;
+        this.blok = false;
     }
     
     public String getNom(){
@@ -34,5 +36,13 @@ public class Joueur {
     
     public void setPoints(int valeur){
         this.points += valeur;
+    }
+    
+    public Boolean getBlok(){
+        return this.blok;
+    }
+    
+    public void setBlok(){
+        this.blok = true;
     }
 }
