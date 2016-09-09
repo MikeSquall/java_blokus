@@ -27,10 +27,12 @@ public class PartieGUI extends javax.swing.JFrame {
     Piece selected;
     Piece pieceDrag;
     CollectionPieces collecPieces;
-    boolean[] jBloked;
+    int jBloked;
     int tour;
     int[][] plateau = new int[20][20];
     Joueur[] players = new Joueur[4];
+    String msgErreur = "";
+    DebugPlateau dp = new DebugPlateau(plateau);
     
     /**
      * Creates new form Partie
@@ -84,7 +86,7 @@ public class PartieGUI extends javax.swing.JFrame {
         }
         collecPieces = new CollectionPieces();
         this.creationPiecesPlateau(collecPieces);
-        this.jBloked = new boolean[4];
+        this.jBloked = 0;
         this.tour = 0;
         this.joueurActif = 0;
     }
@@ -612,7 +614,7 @@ public class PartieGUI extends javax.swing.JFrame {
             for (int i = 0; i < H; i++) {
                 for (int j = 0; j < L; j++) {
                     int finLigne = positionCase / 20;
-                    if(c.getOccupee() == -1 && this.selected.getForme(j, i) == 1 && (positionCase + j < 400) && ((positionCase + j) < ((finLigne * 20) + 20))){
+                    if(c.getOccupee() != joueurActif && this.selected.getForme(j, i) == 1 && (positionCase + j < 400) && ((positionCase + j) < ((finLigne * 20) + 20))){
                         this.board.getComponent(positionCase+j).setBackground(this.numToColor(this.selected.getCouleurJoueur()));
                     }
                 }
@@ -647,27 +649,44 @@ public class PartieGUI extends javax.swing.JFrame {
                                 caseDroppable.add(numCaseCliquee+j);
                             }
                         } else {
-                            flag = false;
+                            if (selected.getForme(j, i) == 1){
+                                msgErreur = "Vous ne pouvez pas chevaucher une autre pièce (1)";
+                                flag = false;
+                            }
                         }
                     } catch(java.lang.ArrayIndexOutOfBoundsException error){
-                            flag = false;
+                        msgErreur = "Vous ne pouvez pas poser une pièce en dehors du plateau";
+                        flag = false;
                     }
                 }
                 if(numCaseCliquee + H < 400){
                     numCaseCliquee+=20;
                 }
             }
+            if(caseDroppable.size() < selected.getValeur()){
+                msgErreur = "Vous ne pouvez pas chevaucher une autre pièce";
+                flag = false;
+            }
+            //System.out.println(caseDroppable.toString());
             if(flag){
                 if (tour < 4){ // test du 1er tour car caseDroppable est vide
-                    flag = caseOk(c.getNumCase());
+                    flag = caseOk(c.getNumCase(), 0);
                 } else { // on récupère les cases dont les coins sont de la couleur du joueur actif
                     ArrayList<Integer> possibilites = toucheCoin();
-                    flag = false; // on inverse le flaf pour tester si on trouve au moins une occurence vraie
-                    for(int i: caseDroppable){
-                        if(caseOk(i)){
-                            if (possibilites.contains(i))
-                                //System.out.println(i + " est dans possibilités");
-                                flag = true;
+                    System.out.println("droppables : "+caseDroppable.toString());
+                    System.out.println("coins      : "+possibilites.toString());
+                    ArrayList<Integer> impossibles = casesInterdites();
+                    System.out.println("interdites : "+impossibles.toString());
+                    flag = false;
+                    if(!checkInterdites(caseDroppable,impossibles)){
+                        for(int i: caseDroppable){
+                            if(caseOk(i,0)){
+                                if (possibilites.contains(i)){
+                                    flag = true;
+                                    System.out.println(flag);
+                                }
+                            }
+                            System.out.println(i);
                         }
                     }
                 }
@@ -676,13 +695,15 @@ public class PartieGUI extends javax.swing.JFrame {
                         ((Case)this.board.getComponent(j)).setOccupee(joueurActif);
                         plateau[j%20][j/20] = joueurActif;
                     }
+                } else {
+                    msgErreur = "Vous ne pouvez pas poser votre pièce ici";
                 }
             }
         }
         return flag;
     }
     
-    private Boolean caseOk(int numCase){
+    private Boolean caseOk(int numCase, int codeAppel){ // codeAppel = 0 pour dropTest, = 1 pour toucheCoin
         Boolean flag = true;
         ArrayList<Integer> bordureNord  = new ArrayList<>();
         ArrayList<Integer> bordureSud   = new ArrayList<>();
@@ -701,58 +722,91 @@ public class PartieGUI extends javax.swing.JFrame {
         bordureOuest.remove(0);
         bordureOuest.remove(18);
         //
+//        System.out.println(numCase);
+//        System.out.println(bordureNord.contains(numCase));
+//        System.out.println(bordureSud.contains(numCase));
+//        System.out.println(bordureEst.contains(numCase));
+//        System.out.println(bordureOuest.contains(numCase));
+        
         if(tour < 4){
             if(joueurActif == 0 && (numCase != 0 || selected.getForme(0,0) == 0)){
+                if(codeAppel == 0)
+                    msgErreur = "La première pièce doit partir du coin supérieur gauche du plateau";
                 flag = false;
             }
             else if(joueurActif == 1 && (numCase != (380-((selected.getLargeur()-1)*20)) || selected.getForme(0,selected.getLargeur()-1) == 0)){ 
                 // comme la partie de la piece qui est placée est en haut à gauche, on compense le décalage
+                if(codeAppel == 0)
+                    msgErreur = "La première pièce doit partir du coin supérieur droit du plateau";
                 flag = false;
             }
             else if(joueurActif == 2 && (numCase != (399-(((selected.getLargeur()-1)*20)+selected.getHauteur()-1)) || selected.getForme(selected.getHauteur()-1, selected.getLargeur()-1) == 0)){
+                if(codeAppel == 0)
+                    msgErreur = "La première pièce doit partir du coin inférieur droit du plateau";
                 flag = false;
             }
             else if(joueurActif == 3 && (numCase != 19-(selected.getHauteur()-1) || selected.getForme(selected.getHauteur()-1,0) == 0)){
+                if(codeAppel == 0)
+                    msgErreur = "La première pièce doit partir du coin inférieur gauche du plateau";
                 flag = false;
             }
         } else if(bordureNord.contains(numCase)){
             if (numCase == 0){
                 if (((Case)this.board.getComponent(numCase + 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 20)).getOccupee() == joueurActif ){
+                    if(codeAppel == 0)
+                        msgErreur = "La pièce jouée ne doit pas toucher une autre pièce de la même couleur (1)";
                     flag = false;
                 }
             } else if (numCase == 380){
                 if (((Case)this.board.getComponent(numCase + 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase - 20)).getOccupee() == joueurActif ){
+                    if(codeAppel == 0)
+                        msgErreur = "La pièce jouée ne doit pas toucher une autre pièce de la même couleur (2)";
                     flag = false;
                 }
             } else {
                 if (((Case)this.board.getComponent(numCase -20)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 20)).getOccupee() == joueurActif ){
+                    if(codeAppel == 0)
+                        msgErreur = "La pièce jouée ne doit pas toucher une autre pièce de la même couleur (3)";
                     flag = false;
                 }
             }
         } else if(bordureSud.contains(numCase)){
             if (numCase == 19){
                 if (((Case)this.board.getComponent(numCase - 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 20)).getOccupee() == joueurActif ){
+                    if(codeAppel == 0)
+                        msgErreur = "La pièce jouée ne doit pas toucher une autre pièce de la même couleur (4)";
                     flag = false;
                 }
             } else if (numCase == 399){
                 if (((Case)this.board.getComponent(numCase - 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase - 20)).getOccupee() == joueurActif ){
+                    if(codeAppel == 0)
+                        msgErreur = "La pièce jouée ne doit pas toucher une autre pièce de la même couleur (5)";
                     flag = false;
                 }
             } else {
                 if (((Case)this.board.getComponent(numCase -20)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase - 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 20)).getOccupee() == joueurActif ){
+                    if(codeAppel == 0)
+                        msgErreur = "La pièce jouée ne doit pas toucher une autre pièce de la même couleur (6)";
                     flag = false;
                 }
             }
         } else if(bordureEst.contains(numCase)){
             if (((Case)this.board.getComponent(numCase -20)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase - 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 1)).getOccupee() == joueurActif){
+                if(codeAppel == 0)
+                    msgErreur = "La pièce jouée ne doit pas toucher une autre pièce de la même couleur (7)";
                 flag = false;
             }
         } else if(bordureOuest.contains(numCase)){
             if (((Case)this.board.getComponent(numCase - 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 20)).getOccupee() == joueurActif ){
+                if(codeAppel == 0)
+                    msgErreur = "La pièce jouée ne doit pas toucher une autre pièce de la même couleur (8)";
                 flag = false;
             }
         } else {
+            //System.out.println("cas général");
             if (((Case)this.board.getComponent(numCase -20)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase - 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 1)).getOccupee() == joueurActif || ((Case)this.board.getComponent(numCase + 20)).getOccupee() == joueurActif){
+                if(codeAppel == 0)
+                    msgErreur = "La pièce jouée ne doit pas toucher une autre pièce de la même couleur (9)";
                 flag = false;
             }
         }
@@ -781,6 +835,7 @@ public class PartieGUI extends javax.swing.JFrame {
         for (int i = 0; i < 400; i++) {
             Case caseTestee = ((Case)board.getComponent(i));
             if (caseTestee.getOccupee() == joueurActif){
+                // si caseTestee est dans la bordure Nord
                 if(bordureNord.contains(caseTestee.getNumCase())){
                     if(caseTestee.getNumCase() == 0){
                         if(((Case)board.getComponent(21)).getOccupee() == -1){
@@ -792,13 +847,16 @@ public class PartieGUI extends javax.swing.JFrame {
                         }
                     } else {
                         if(((Case)board.getComponent(i-19)).getOccupee() == -1){
-                            casesJouables.add(i-19);
+                            if(caseOk(((Case)board.getComponent(i-19)).getNumCase(), 1))
+                                casesJouables.add(i-19);
                         }
                         if(((Case)board.getComponent(i+21)).getOccupee() == -1){
-                            casesJouables.add(i+21);
+                            if(caseOk(((Case)board.getComponent(i+21)).getNumCase(), 1))
+                                casesJouables.add(i+21);
                         }
                     }
-                } else if(bordureSud.contains(caseTestee.getNumCase())){
+                } // si caseTestee est dans la bordure Sud
+                else if(bordureSud.contains(caseTestee.getNumCase())){
                     if(caseTestee.getNumCase() == 19){
                         if(((Case)board.getComponent(38)).getOccupee() == -1){
                             casesJouables.add(38);
@@ -809,44 +867,169 @@ public class PartieGUI extends javax.swing.JFrame {
                         }
                     } else {
                         if(((Case)board.getComponent(i+19)).getOccupee() == -1){
-                            casesJouables.add(i+19);
+                            if(caseOk(((Case)board.getComponent(i+19)).getNumCase(), 1))
+                                casesJouables.add(i+19);
                         }
                         if(((Case)board.getComponent(i-21)).getOccupee() == -1){
-                            casesJouables.add(i-21);
+                            if(caseOk(((Case)board.getComponent(i-21)).getNumCase(), 1))
+                                casesJouables.add(i-21);
                         }
                     }
-                } else if(bordureEst.contains(caseTestee.getNumCase())){
+                } // si caseTestee est dans la bordure Est
+                else if(bordureEst.contains(caseTestee.getNumCase())){
                     if(((Case)board.getComponent(i-19)).getOccupee() == -1){
-                        casesJouables.add(i-19);
+                        if(caseOk(((Case)board.getComponent(i-19)).getNumCase(), 1))
+                            casesJouables.add(i-19);
                     }
                     if(((Case)board.getComponent(i-21)).getOccupee() == -1){
-                        casesJouables.add(i-21);
+                        if(caseOk(((Case)board.getComponent(i-21)).getNumCase(), 1))
+                            casesJouables.add(i-21);
                     }
-                } else if(bordureOuest.contains(caseTestee.getNumCase())){
+                } // si caseTestee est dans la bordure Ouest
+                else if(bordureOuest.contains(caseTestee.getNumCase())){
                     if(((Case)board.getComponent(i+19)).getOccupee() == -1){
-                        casesJouables.add(i+19);
+                        if(caseOk(((Case)board.getComponent(i+19)).getNumCase(), 1))
+                            casesJouables.add(i+19);
                     }
                     if(((Case)board.getComponent(i+21)).getOccupee() == -1){
-                        casesJouables.add(i+21);
+                        if(caseOk(((Case)board.getComponent(i+21)).getNumCase(), 1))
+                            casesJouables.add(i+21);
                     }
-                } else { // case non située en bordure de plateau
+                } // si caseTestee est ailleurs dans le plateau (cas général)
+                else { 
                     if(((Case)board.getComponent(i-19)).getOccupee() == -1){
-                        casesJouables.add(i-19);
+                        if(caseOk(((Case)board.getComponent(i-19)).getNumCase(), 1))
+                            casesJouables.add(i-19);
                     }
                     if(((Case)board.getComponent(i-21)).getOccupee() == -1){
-                        casesJouables.add(i+21);
+                        if(caseOk(((Case)board.getComponent(i-21)).getNumCase(), 1))
+                            casesJouables.add(i-21);
                     }
                     if(((Case)board.getComponent(i+19)).getOccupee() == -1){
-                        casesJouables.add(i+19);
+                        if(caseOk(((Case)board.getComponent(i+19)).getNumCase(), 1))
+                            casesJouables.add(i+19);
                     }
                     if(((Case)board.getComponent(i+21)).getOccupee() == -1){
-                        casesJouables.add(i+21);
+                        if(caseOk(((Case)board.getComponent(i+21)).getNumCase(), 1))
+                            casesJouables.add(i+21);
                     }
                 }
             }
         }
         
         return casesJouables;
+    }
+    
+    private ArrayList<Integer> casesInterdites(){
+        ArrayList<Integer> bordureNord  = new ArrayList<>();
+        ArrayList<Integer> bordureSud   = new ArrayList<>();
+        ArrayList<Integer> bordureEst   = new ArrayList<>();
+        ArrayList<Integer> bordureOuest = new ArrayList<>();
+        ArrayList<Integer> casesKO = new ArrayList<>();
+        
+        for (int i = 0; i < 20; i++) {
+            bordureNord.add(i*20);
+            bordureSud.add((i*20)+19);
+            bordureEst.add(380+i);
+            bordureOuest.add(i);
+        }
+        
+        for (int i = 0; i < 400; i++) {
+            Case caseTestee = ((Case)board.getComponent(i));
+            if (caseTestee.getOccupee() == joueurActif){
+                // si caseTestee est dans la bordure Nord
+                if(bordureNord.contains(caseTestee.getNumCase())){
+                    if(caseTestee.getNumCase() == 0){
+                        if(((Case)board.getComponent(21)).getOccupee() == -1){
+                            casesKO.add(21);
+                        }
+                    } else if (caseTestee.getNumCase() == 380){
+                        if(((Case)board.getComponent(361)).getOccupee() == -1){
+                            casesKO.add(361);
+                        }
+                    } else {
+                        if(((Case)board.getComponent(i-19)).getOccupee() == -1){
+                            if(!caseOk(((Case)board.getComponent(i-19)).getNumCase(), 1))
+                                casesKO.add(i-19);
+                        }
+                        if(((Case)board.getComponent(i+21)).getOccupee() == -1){
+                            if(!caseOk(((Case)board.getComponent(i+21)).getNumCase(), 1))
+                                casesKO.add(i+21);
+                        }
+                    }
+                } // si caseTestee est dans la bordure Sud
+                else if(bordureSud.contains(caseTestee.getNumCase())){
+                    if(caseTestee.getNumCase() == 19){
+                        if(((Case)board.getComponent(38)).getOccupee() == -1){
+                            casesKO.add(38);
+                        }
+                    } else if (caseTestee.getNumCase() == 399){
+                        if(((Case)board.getComponent(378)).getOccupee() == -1){
+                            casesKO.add(378);
+                        }
+                    } else {
+                        if(((Case)board.getComponent(i+19)).getOccupee() == -1){
+                            if(!caseOk(((Case)board.getComponent(i+19)).getNumCase(), 1))
+                                casesKO.add(i+19);
+                        }
+                        if(((Case)board.getComponent(i-21)).getOccupee() == -1){
+                            if(!caseOk(((Case)board.getComponent(i-21)).getNumCase(), 1))
+                                casesKO.add(i-21);
+                        }
+                    }
+                } // si caseTestee est dans la bordure Est
+                else if(bordureEst.contains(caseTestee.getNumCase())){
+                    if(((Case)board.getComponent(i-19)).getOccupee() == -1){
+                        if(!caseOk(((Case)board.getComponent(i-19)).getNumCase(), 1))
+                            casesKO.add(i-19);
+                    }
+                    if(((Case)board.getComponent(i-21)).getOccupee() == -1){
+                        if(!caseOk(((Case)board.getComponent(i-21)).getNumCase(), 1))
+                            casesKO.add(i-21);
+                    }
+                } // si caseTestee est dans la bordure Ouest
+                else if(bordureOuest.contains(caseTestee.getNumCase())){
+                    if(((Case)board.getComponent(i+19)).getOccupee() == -1){
+                        if(!caseOk(((Case)board.getComponent(i+19)).getNumCase(), 1))
+                            casesKO.add(i+19);
+                    }
+                    if(((Case)board.getComponent(i+21)).getOccupee() == -1){
+                        if(!caseOk(((Case)board.getComponent(i+21)).getNumCase(), 1))
+                            casesKO.add(i+21);
+                    }
+                } // si caseTestee est ailleurs dans le plateau (cas général)
+                else {
+                    if(((Case)board.getComponent(i-19)).getOccupee() == -1){
+                        if(!caseOk(((Case)board.getComponent(i-19)).getNumCase(), 1))
+                            casesKO.add(i-19);
+                    }
+                    if(((Case)board.getComponent(i-21)).getOccupee() == -1){
+                        if(!caseOk(((Case)board.getComponent(i-21)).getNumCase(), 1))
+                            casesKO.add(i-21);
+                    }
+                    if(((Case)board.getComponent(i+19)).getOccupee() == -1){
+                        if(!caseOk(((Case)board.getComponent(i+19)).getNumCase(), 1))
+                            casesKO.add(i+19);
+                    }
+                    if(((Case)board.getComponent(i+21)).getOccupee() == -1){
+                        if(!caseOk(((Case)board.getComponent(i+21)).getNumCase(), 1))
+                            casesKO.add(i+21);
+                    }
+                }
+            }    
+        }
+        return casesKO;
+    }
+    
+    private Boolean checkInterdites(ArrayList<Integer> source, ArrayList<Integer> cible){
+        boolean flag = false;
+        
+        for(int i: source){
+            if(cible.contains(i)){
+                flag = true;
+            }
+        }
+        return flag;
     }
     
     private void drop(java.awt.event.MouseEvent e){
@@ -876,7 +1059,7 @@ public class PartieGUI extends javax.swing.JFrame {
                 // on passe le tour au joueur suivant
                 tourSuivant();
             } else {
-                JOptionPane.showMessageDialog(this, "Attention ! Déplacement non autorisé");
+                JOptionPane.showMessageDialog(this, "Attention ! " + msgErreur);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Attention ! Vous n'avez pas sélectionné de pièce");
@@ -894,6 +1077,8 @@ public class PartieGUI extends javax.swing.JFrame {
                 break;
         }
         pasTonTour(1);
+        //dp = new DebugPlateau(plateau);
+        //dp.setVisible(true);
         tour++;
     }
     
