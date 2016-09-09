@@ -97,7 +97,7 @@ public class Accueil extends javax.swing.JFrame {
         }
         
         // lancement partie
-        PartieGUI partie = new PartieGUI(tabJoueurs);
+        PartieGUI partie = new PartieGUI(tabJoueurs, nombreJoueurs);
         partie.setVisible(true);
     }//GEN-LAST:event_btnJouerActionPerformed
 

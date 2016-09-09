@@ -22,7 +22,7 @@ import javax.swing.border.Border;
  * @author Squall
  */
 public class PartieGUI extends javax.swing.JFrame {
-    
+    int nombreReelJoueur;
     int joueurActif;
     Piece selected;
     Piece pieceDrag;
@@ -37,25 +37,26 @@ public class PartieGUI extends javax.swing.JFrame {
     /**
      * Creates new form Partie
      */
-    public PartieGUI(Joueur[] noms) {
+    public PartieGUI(Joueur[] noms, int nbJoueurs) {
         initComponents();
         this.setLocationRelativeTo(null);
         btnRotation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blokus/btnRotation.png")));
         btnSymetrie.setIcon(new javax.swing.ImageIcon(getClass().getResource("/blokus/btnSymetrie.png")));
         
+        this.nombreReelJoueur = nbJoueurs;
         players[0] = noms[0];
         this.j1Name.setText(noms[0].getNom());
         players[1] = noms[1];
         this.j2Name.setText(noms[1].getNom());
         if(noms[2] == null && noms[3] == null){
-            players[2] = noms[0];
+            players[2] = new Joueur(noms[0].getNom(), 2);
             this.j3Name.setText(noms[0].getNom());
-            players[3] = noms[1];
+            players[3] = new Joueur(noms[1].getNom(), 3);
             this.j4Name.setText(noms[1].getNom());
         } else if(noms[2] != null && noms[3] == null){
             players[2] = noms[2];
             this.j3Name.setText(noms[2].getNom());
-            players[3] = noms[0];
+            players[3] = new Joueur(noms[0].getNom(), 3);
             this.j4Name.setText(noms[0].getNom());
         } else if(noms[2] != null && noms[3] != null){
             players[2] = noms[2];
@@ -1066,11 +1067,14 @@ public class PartieGUI extends javax.swing.JFrame {
                 }
                 // on met à jour ses points
                 players[joueurActif].setPoints(selected.getValeur());
-                // on réinitialise le bloc 'pièce sélectionnée'
-                selected = null;
-                disposePieceSelected();
-                // on passe le tour au joueur suivant
-                tourSuivant();
+                // on teste la fn de partie
+                if(!finPartie()){
+                    // on réinitialise le bloc 'pièce sélectionnée'
+                    selected = null;
+                    disposePieceSelected();
+                    // on passe le tour au joueur suivant
+                    tourSuivant();
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Attention ! " + msgErreur);
             }
@@ -1099,6 +1103,124 @@ public class PartieGUI extends javax.swing.JFrame {
         tour++;
     }
     
+    private Boolean finPartie(){
+        boolean fin = false;
+        String msgScores = "";
+        String winner = "";
+        if(players[joueurActif].getPoints() == 0){
+            for (int i = 0; i < 4; i++) {
+                msgScores += "Score de " + players[i].getNom() + " : " + players[i].getPoints() + "\n";
+            }
+            if(this.nombreReelJoueur == 2){
+                int score1, score2, bonus;
+                score1 = (players[0].getPoints()+players[2].getPoints());
+                score2 = (players[1].getPoints()+players[3].getPoints());
+                if(selected.getValeur() == 1){
+                    bonus = 20;
+                } else {
+                    bonus = 15;
+                }
+                if(joueurActif == 0 || joueurActif == 2){
+                    score1 += bonus;
+                } else {
+                    score2 += bonus;
+                }
+                if(score1 < score2){
+                    winner += players[1].getNom();
+                } else if(score1 > score2){
+                    winner += players[0].getNom();
+                } else {
+                    winner += "Egalité !";
+                }
+            } else {
+                winner += players[joueurActif].getNom();
+            }
+            JOptionPane.showMessageDialog(this, msgScores + "La partie est gagnée par : " + winner);
+            fin = true;
+        } else if (players[0].getBlok() && players[1].getBlok() && players[2].getBlok() && players[3].getBlok()) {
+            int score1, score2, score3, score4;
+            switch(this.nombreReelJoueur){
+                case 2:
+                    score1 = (players[0].getPoints()+players[2].getPoints());
+                    score2 = (players[1].getPoints()+players[3].getPoints());
+                    msgScores += "Score de " + players[0].getNom() + " : " + score1 + "\n";
+                    msgScores += "Score de " + players[1].getNom() + " : " + score2 + "\n";
+                    if(score1 < score2){
+                        winner += players[1].getNom();
+                    } else if(score1 > score2){
+                        winner += players[0].getNom();
+                    } else {
+                        winner += "Egalité !";
+                    }
+                    break;
+                case 3: 
+                    score1 = players[0].getPoints();
+                    score2 = players[1].getPoints();
+                    score3 = players[2].getPoints();
+                    for (int i = 0; i < 3; i++) {
+                        msgScores += "Score de " + players[i].getNom() + " : " + players[i].getPoints() + "\n";
+                    }
+                    if(score1 > score2 && score1 > score3){
+                        winner += players[0].getNom();
+                    } else if(score2 > score1 && score2 > score3){
+                        winner += players[1].getNom();
+                    } else if(score3 > score1 && score3 > score2){
+                        winner += players[2].getNom();
+                    }  else if(score2 == score1 && score2 > score3){
+                        winner += "Egalité entre" + players[0].getNom() + " et " + players[1].getNom();
+                    }  else if(score2 == score3 && score2 > score1){
+                        winner += "Egalité entre" + players[1].getNom() + " et " + players[2].getNom();
+                    }   else if(score1 == score3 && score1 > score2){
+                        winner += "Egalité entre" + players[0].getNom() + " et " + players[2].getNom();
+                    } else {
+                        winner += "Egalité totale !";
+                    }
+                    break;
+                case 4:
+                    score1 = players[0].getPoints();
+                    score2 = players[1].getPoints();
+                    score3 = players[2].getPoints();
+                    score4 = players[3].getPoints();
+                    for (int i = 0; i < 4; i++) {
+                        msgScores += "Score de " + players[i].getNom() + " : " + players[i].getPoints() + "\n";
+                    }
+                    if(score1 > score2 && score1 > score3 && score1 > score4){
+                        winner += players[0].getNom();
+                    } else if(score2 > score1 && score2 > score3 && score2 > score4){
+                        winner += players[1].getNom();
+                    } else if(score3 > score1 && score3 > score2 && score3 > score4){
+                        winner += players[2].getNom();
+                    } else if(score4 > score1 && score4 > score2 && score4 > score3){
+                        winner += players[3].getNom();
+                    } else if(score1 == score2 && score1 > score3 && score1 > score4){
+                        winner += "Egalité entre" + players[0].getNom() + " et " + players[1].getNom();
+                    } else if(score1 == score3 && score1 > score2 && score1 > score4){
+                        winner += "Egalité entre" + players[0].getNom() + " et " + players[2].getNom();
+                    } else if(score1 == score4 && score1 > score3 && score1 > score2){
+                        winner += "Egalité entre" + players[0].getNom() + " et " + players[3].getNom();
+                    } else if(score2 == score3 && score2 > score1 && score2 > score4){
+                        winner += "Egalité entre" + players[1].getNom() + " et " + players[2].getNom();
+                    } else if(score2 == score4 && score2 > score1 && score2 > score3){
+                        winner += "Egalité entre" + players[1].getNom() + " et " + players[3].getNom();
+                    } else if(score4 == score3 && score3 > score1 && score3 > score2){
+                        winner += "Egalité entre" + players[2].getNom() + " et " + players[3].getNom();
+                    } else if(score1 == score2 && score1 == score3 && score1 > score4){
+                        winner += "Egalité entre" + players[0].getNom() + ", " + players[1].getNom()+ " et " + players[2].getNom();
+                    } else if(score1 == score2 && score1 == score4 && score1 > score3){
+                        winner += "Egalité entre" + players[0].getNom() + ", " + players[1].getNom()+ " et " + players[3].getNom();
+                    } else if(score2 == score3 && score2 == score4 && score2 > score1){
+                        winner += "Egalité entre" + players[1].getNom() + ", " + players[2].getNom()+ " et " + players[3].getNom();
+                    } else {
+                        winner += "Egalité totale !";
+                    }
+                    break;
+            }
+            JOptionPane.showMessageDialog(this, "Tous les joueurs sont bloqués !\n" + msgScores + "La partie est gagnée par : " + winner);
+            fin = true;
+        }
+        return fin;
+    }
+    
     private void btnRotationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRotationMouseClicked
         Piece p = Piece.rotationPiece(selected);
         this.affichePieceSelected(p);
@@ -1112,6 +1234,7 @@ public class PartieGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSymetrieMouseClicked
 
     private void btnBlokedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBlokedActionPerformed
+        selected = null;
         players[joueurActif].setBlok();
         String couleur = "";
         switch(joueurActif){
@@ -1129,7 +1252,8 @@ public class PartieGUI extends javax.swing.JFrame {
                     break;
             }
         JOptionPane.showMessageDialog(this, players[joueurActif].getNom() + " (" + couleur + ") est bloqué !\nIl ne pourra plus jouer durant cette partie.");
-        tourSuivant();
+        if(!finPartie())
+            tourSuivant();
     }//GEN-LAST:event_btnBlokedActionPerformed
 
     /**
