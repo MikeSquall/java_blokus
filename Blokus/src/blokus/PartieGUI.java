@@ -33,7 +33,7 @@ public class PartieGUI extends javax.swing.JFrame {
     int[][] plateau = new int[20][20];
     Joueur[] players = new Joueur[4];
     String msgErreur = "";
-    DebugPlateau dp = new DebugPlateau(plateau);
+    //DebugPlateau dp = new DebugPlateau(plateau);
     Font font;
     
     /**
@@ -130,10 +130,8 @@ public class PartieGUI extends javax.swing.JFrame {
         setResizable(false);
 
         board.setBackground(new java.awt.Color(255, 255, 255));
-        board.setLocation(new java.awt.Point(312, 160));
         board.setMaximumSize(new java.awt.Dimension(400, 400));
         board.setPreferredSize(new java.awt.Dimension(400, 400));
-        board.setSize(new java.awt.Dimension(400, 400));
 
         javax.swing.GroupLayout boardLayout = new javax.swing.GroupLayout(board);
         board.setLayout(boardLayout);
@@ -235,11 +233,11 @@ public class PartieGUI extends javax.swing.JFrame {
         selectedPiece.setLayout(selectedPieceLayout);
         selectedPieceLayout.setHorizontalGroup(
             selectedPieceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 128, Short.MAX_VALUE)
+            .addGap(0, 130, Short.MAX_VALUE)
         );
         selectedPieceLayout.setVerticalGroup(
             selectedPieceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 106, Short.MAX_VALUE)
+            .addGap(0, 107, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout conteneurPieceJoueeLayout = new javax.swing.GroupLayout(conteneurPieceJouee);
@@ -677,7 +675,7 @@ public class PartieGUI extends javax.swing.JFrame {
                 flag = false;
             }
             //System.out.println(caseDroppable.toString());
-            if(flag){
+            if(flag == true){
                 if (tour < 4){ // test du 1er tour car caseDroppable est vide
                     flag = caseOk(c.getNumCase(), 0);
                 } else { // on récupère les cases dont les coins sont de la couleur du joueur actif
@@ -686,17 +684,30 @@ public class PartieGUI extends javax.swing.JFrame {
                     System.out.println("coins      : "+possibilites.toString());
                     ArrayList<Integer> impossibles = casesInterdites();
                     System.out.println("interdites : "+impossibles.toString());
-                    flag = false;
+
                     if(!checkInterdites(caseDroppable,impossibles)){
-                        for(int i: caseDroppable){
-                            if(caseOk(i,0)){
+                        int compt = 0;
+                        /*on s'assure d'abord que toutes les cases sur les quelles on veut poser la pièce sont OK*/
+                        while (flag == true && compt < caseDroppable.size()){
+                            if(!caseOk(caseDroppable.get(compt),0)){
+                                flag = false;
+                            }
+                            compt++;
+                        }
+                        /*si toutes les cases sont OK, on s'assure ensuite que l'une des cases de la pièce à poser touche le coin d'une case du plateau de la même couleur*/
+                        if (flag == true){
+                            /*on passe le flag à faux: on part du principe qu'on ne peut pas poser la pièce
+                            si une des cases droppables est trouvée dans la liste des coins, alors on peut poser la pièce*/
+                            flag = false;
+                            for (int i : caseDroppable){
                                 if (possibilites.contains(i)){
                                     flag = true;
-                                    System.out.println(flag);
                                 }
                             }
-                            System.out.println(i);
                         }
+                    /*si l'une des cases droppables est trouvée dans la liste des cases interdites, alors on ne peut pas faire le drop*/
+                    } else {
+                        flag = false;
                     }
                 }
                 if (flag == true){
