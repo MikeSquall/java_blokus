@@ -118,8 +118,8 @@ public class Accueil extends javax.swing.JFrame {
     }//GEN-LAST:event_btnQuitterActionPerformed
 
     private void btnRulesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRulesActionPerformed
-        //Rules rule = new Rules();
-        //rule.setVisible(true);
+        Rules rule = new Rules();
+        rule.setVisible(true);
     }//GEN-LAST:event_btnRulesActionPerformed
 
     /**
